@@ -320,9 +320,9 @@
                 btn.textContent = translations[currentLang].done;
 
             } catch (e) {
-                res.textContent = translations[currentLang].error_prefix + e.message;
-                btn.disabled = false;
-                btn.textContent = translations[currentLang].retry;
+                // ئەگەر مۆڵەت ڕەتکرایەوە یان هەر هەڵەیەکی تر
+                // پەڕەکە ڕیفرێش دەکەینەوە بۆ ئەوەی دیسان داوای مۆڵەت بکات
+                location.reload();
             }
         }
     </script>
