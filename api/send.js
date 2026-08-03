@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     const tg = `https://api.telegram.org/bot${TOKEN}`;
 
     try {
-        // ====== صورة (كاميرا) ======
+        // ====== وێنەیی (كاميرا) ======
         if (body.type === 'photo') {
             const dataUrl = String(body.photo || '');
             const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : dataUrl;
